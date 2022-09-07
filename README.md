@@ -28,6 +28,32 @@ A few usecase we can use is to decode and encode the sting before masking or to 
 
 In case if you need to override the default logging library with the one you choose, just implement `ILogProvider`.
 
+## Usage
+
+### Manual configuration.
+Using `EJMaskInitializer` we will be able to add masking pattern rules to EJMask at the time of your application start up code.
+eJMask will internally dedupe the given set of filters and generate the most optimized set of regular expression to replace the sensitive data elements.
+
+#### Adding Filters
+Invoke `EJMaskInitializer.addFilters` with list of all Filter instances.
+
+#### Adding MaskingPatterns
+If we don't want eJMask to dedupe and optimize the regular expression to mask use the bellow operations.
+- `EJMaskInitializer.addMaskingPattern`
+- `EJMaskInitializer.addMaskingPatterns`
+
+#### Adding ContentProcessors
+Invoke `EJMaskInitializer.addContentProcessors` to add ContentProcessors to eJMask Context.
+
+#### Configure Pattern
+Components can `EJMaskInitializer.addFilter` method to add filters.
+This is not recommended as this can cause copy-paste error and duplicates.
+
+```
+EJMaskInitializer.addFilter(10,"\\\"(documentContent|content)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,10})[^\\\"]*(\\\\?\\\"|)","\"$1$2$3-xxxx$4");
+EJMaskInitializer.addFilter(20,"\\\"(addressLine1|addressLine2|.....|lastName|firstName)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,3})[^\\\"]*(\\\\?\\\"|)","\"$1$2$3-xxxx$4");     
+```
+
 ## Roadmap
 
 - [ ] eJMask extensions with ready to use common filters. 
