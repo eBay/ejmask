@@ -20,6 +20,12 @@ EJMask.mask(input);
 `IPatternBuilder` implementations are responsible to generate the regular expression needed to replace data to be masked..
 For many standard use cases you can make use of patten builders defined in ejmask extensions module.
 
+- HeaderFieldPatternBuilder
+- FullValueMaskJsonPatternBuilder
+- JsonFieldPatternBuilder
+- JsonRelativeFieldPatternBuilder
+- XmlFieldPattenBuilder
+
 ### ContentProcessor
 `ContentProcessor`(s) configured with the data masker will be invoked to process the data before and after actual masking operations getting invoked.
 A few usecase we can use is to decode and encode the sting before masking or to reduce the size of a large string before performing the masking operation to improve performance.

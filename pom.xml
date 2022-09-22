@@ -11,6 +11,7 @@
     <modules>
         <module>ejmask-api</module>
         <module>ejmask-core</module>
+        <module>ejmask-extensions</module>
     </modules>
 
     <properties>
