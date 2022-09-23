@@ -62,7 +62,7 @@ EJMaskInitializer.addFilter(20,"\\\"(addressLine1|addressLine2|.....|lastName|fi
 
 ## Roadmap
 
-- [ ] eJMask extensions with ready to use common filters. 
+- [x] eJMask extensions with ready to use common filters. 
 - [ ] Spring Bean Support.
 - [ ] Spring Boot Starter Support.
 - [ ] Users will be able to mask any given field by annotating with `@Filter` annotation.
