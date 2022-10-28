@@ -60,12 +60,80 @@ EJMaskInitializer.addFilter(10,"\\\"(documentContent|content)(\\\\*\\\"\\s*:\\s*
 EJMaskInitializer.addFilter(20,"\\\"(addressLine1|addressLine2|.....|lastName|firstName)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,3})[^\\\"]*(\\\\?\\\"|)","\"$1$2$3-xxxx$4");     
 ```
 
+#### Auto configuration
+
+If you are using spring application ejamsk configurations can easily be auto wired using the following options.
+
+#### Defining Beans.
+
+##### Option 1:
+
+- Extend directly from `BaseFilter` or implement `IFilter`.
+- Annotate the class with spring `@Component` annotation.
+- Add the Package to component scan.
+- Done !!
+
+```java
+@Component("data-filter.add-address")
+public class AddAddressFilter extends BaseFilter {
+    AddAddressFilter() {
+        super(JsonFieldPatternBuilder.class, "addressLine1", "addressLine2");
+    }
+}
+```
+
+> ideal for cases where all filed share one filter configuration.
+
+##### Option 2:
+
+- Create a new spring configuration class.
+- Create and inject beans which extends `BaseFilter`
+- We can add multiple groups for better readability.
+- Annotate the class with spring `@Component` annotation.
+    - Add to package to component class.
+- Done !!
+
+```java
+@Configuration("data-filter.config.add-shareholder")
+public class AddShareholderRequestFilterConfiguration {
+
+    @Bean(name = "data-filter.add-shareholder")
+    public IFilter getShareholder() {
+        return new BaseFilter(JsonFieldPatternBuilder.class, "email");
+    }
+
+    @Bean(name = "data-filter.add-shareholder.personalInfo")
+    public IFilter getShareholderPersonalInfo() {
+        return new BaseFilter(JsonFieldPatternBuilder.class, "firstName", "lastName", "dateOfBirth");
+    }
+}
+```
+
+
+### Spring extensions
+eJMask is a spring native library, spring eases the process of configuring eJMask and makes integration fun and secure.
+
+#### WireOn
+Fist add `ejmask-spring-core` to your dependency list.
+
+```xml
+<dependency>
+    <groupId>com.ebay.pmt2.ejmask</groupId>
+    <artifactId>ejmask-spring-a</artifactId>
+</dependency>
+```
+
+then simply add `com.ebay.pmt2.ejmask.spring.core` to your spring context scanning.
+
+```xml
+<context:component-scan base-package="com.ebay.pmt2.ejmask.spring.core"/>
+```
+
 ## Roadmap
 
 - [x] eJMask extensions with ready to use common filters. 
-- [ ] Spring Bean Support.
+- [x] Spring Bean Support.
 - [ ] Spring Boot Starter Support.
 - [ ] Users will be able to mask any given field by annotating with `@Filter` annotation.
 - [ ] Users will should be able to configure data filters through `ejmas.ymal`.
 - [ ] Mask Operation with timeout.
-
