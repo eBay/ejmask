@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.ebay.pmt2.ejmask.spring.boot.autoconfig.EJMaskAutoConfig

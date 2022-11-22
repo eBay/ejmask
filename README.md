@@ -129,11 +129,33 @@ then simply add `com.ebay.pmt2.ejmask.spring.core` to your spring context scanni
 <context:component-scan base-package="com.ebay.pmt2.ejmask.spring.core"/>
 ```
 
+#### AutoConfiguration
+If your application is built on spring boot you can skip the above step by simply adding `ejmask-spring-boot` into dependency list.
+
+```xml
+
+<dependency>
+    <groupId>com.ebay.pmt2.ejmask</groupId>
+    <artifactId>ejmask-spring-autoconfig</artifactId>
+</dependency>
+```
+
+**Properties**
+
+| property                                   | description                                    | values               | default   |
+|--------------------------------------------|------------------------------------------------|----------------------|-----------|
+| `ejmask.autoconfig`                        | Conditionally wire on flat                     | `enabled`,`disabled` | `enabled` |
+| `ejmask.processor.content-slicer`          | Conditionally wire on content slicer processor | `enabled`,`disabled` | `enabled` |
+| `ejmask.processor.content-slicer.priority` | Content slicer priority                        | integer              | `50`      |
+| `ejmask.processor.content-slicer.max-size` | Content slicer maximum allowed length          | integer              | `10000`   |
+| `ejmask.processor.content-slicer.new-size` | Content slicer maximum new content size.       | integer              | `4000`    |
+
+
 ## Roadmap
 
 - [x] eJMask extensions with ready to use common filters. 
 - [x] Spring Bean Support.
-- [ ] Spring Boot Starter Support.
+- [x] Spring Boot Starter Support.
 - [ ] Users will be able to mask any given field by annotating with `@Filter` annotation.
 - [ ] Users will should be able to configure data filters through `ejmas.ymal`.
 - [ ] Mask Operation with timeout.
