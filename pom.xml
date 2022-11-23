@@ -13,6 +13,7 @@
         <module>ejmask-core</module>
         <module>ejmask-extensions</module>
         <module>ejmask-spring</module>
+        <module>ejmask-bom</module>
     </modules>
 
     <properties>

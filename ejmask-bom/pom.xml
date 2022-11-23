@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.ebay.pmt2.ejmask</groupId>
+        <artifactId>ejmask-parent</artifactId>
+        <version>0.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>ejmask-bom</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        This Bill of Materials POM can be used to ease dependency management when
+        referencing multiple ejmask and other artifacts using Gradle or Maven.
+    </description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.ebay.pmt2.ejmask</groupId>
+                <artifactId>ejmask-api</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ebay.pmt2.ejmask</groupId>
+                <artifactId>ejmask-core</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ebay.pmt2.ejmask</groupId>
+                <artifactId>ejmask-extensions</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ebay.pmt2.ejmask</groupId>
+                <artifactId>ejmask-spring-core</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ebay.pmt2.ejmask</groupId>
+                <artifactId>ejmask-spring-boot</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ebay.pmt2.ejmask</groupId>
+                <artifactId>ejmask-spring-autoconfig</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

@@ -119,7 +119,7 @@ Fist add `ejmask-spring-core` to your dependency list.
 ```xml
 <dependency>
     <groupId>com.ebay.pmt2.ejmask</groupId>
-    <artifactId>ejmask-spring-a</artifactId>
+    <artifactId>ejmask-spring-autoconfig</artifactId>
 </dependency>
 ```
 
@@ -136,7 +136,7 @@ If your application is built on spring boot you can skip the above step by simpl
 
 <dependency>
     <groupId>com.ebay.pmt2.ejmask</groupId>
-    <artifactId>ejmask-spring-autoconfig</artifactId>
+    <artifactId>ejmask-spring-boot</artifactId>
 </dependency>
 ```
 
@@ -150,6 +150,23 @@ If your application is built on spring boot you can skip the above step by simpl
 | `ejmask.processor.content-slicer.max-size` | Content slicer maximum allowed length          | integer              | `10000`   |
 | `ejmask.processor.content-slicer.new-size` | Content slicer maximum new content size.       | integer              | `4000`    |
 
+### Where can I get the latest release?
+You can download source and binaries from our [release page](https://github.com/eBay/ejmask/releases).
+Alternatively you can pull it from the central Maven repositories:
+
+### Using in your maven project.
+```xml
+<dependency>
+    <groupId>com.ebay.pmt2.ejmask</groupId>
+    <artifactId>ejmask-bom</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+### Using in your Gradle Project.
+```
+compile group: 'com.ebay.pmt2.ejmask', name: 'ejmask-bom', version: '1.0.0'
+```
 
 ## Roadmap
 
