@@ -9,6 +9,7 @@ import com.ebay.pmt2.ejmask.core.util.LoggerUtil;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,7 +53,7 @@ public class EJMaskInitializer {
      *
      * @param maskingPattern new value of MaskingPatterns
      */
-    public static synchronized void addMaskingPattern(MaskingPattern maskingPattern) {
+    public static void addMaskingPattern(MaskingPattern... maskingPattern) {
         EJMask.register(maskingPattern);
     }
 
@@ -64,10 +65,20 @@ public class EJMaskInitializer {
      *
      * @param maskingPatterns new value of MaskingPatterns
      */
-    public static synchronized void addMaskingPatterns(Collection<MaskingPattern> maskingPatterns) {
+    public static void addMaskingPatterns(Collection<MaskingPattern> maskingPatterns) {
         if (CommonUtils.isNotEmpty(maskingPatterns)) {
             EJMask.register(maskingPatterns.toArray(new MaskingPattern[]{}));
         }
+    }
+
+    /**
+     * Register the given list of IContentPreProcessor. once added we wont be
+     * able to de register these IContentPreProcessors
+     *
+     * @param contentProcessors new value of contentProcessors
+     */
+    public static void addContentProcessor(IContentProcessor... contentProcessors) {
+        addContentProcessors(Arrays.asList(contentProcessors));
     }
 
     /**
@@ -81,6 +92,16 @@ public class EJMaskInitializer {
             EJMask.register(contentPreProcessor);
             LoggerUtil.info("data-filter-initializer", "processors", "adding " + contentPreProcessor.getName());
         }
+    }
+
+    /**
+     * Register the given list of IFilter. once added we won't be able to de
+     * register these IFilter
+     *
+     * @param filters as list of IFilter
+     */
+    public static void addFilter(IFilter... filters) {
+        addFilters(Arrays.asList(filters));
     }
 
     /**

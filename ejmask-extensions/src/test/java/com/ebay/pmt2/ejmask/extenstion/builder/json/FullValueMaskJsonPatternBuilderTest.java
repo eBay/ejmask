@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  */
 public class FullValueMaskJsonPatternBuilderTest {
 
-    private static final FullValueMaskJsonPatternBuilder instance = new FullValueMaskJsonPatternBuilder();
+    private static final JsonFullValuePatternBuilder instance = new JsonFullValuePatternBuilder();
     private static final String[] fieldNames = new String[]{"cvv", "ssnLastFourDigit"};
 
 

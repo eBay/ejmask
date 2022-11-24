@@ -8,7 +8,6 @@
     </parent>
 
     <artifactId>ejmask-spring</artifactId>
-
     <packaging>pom</packaging>
 
     <modules>
@@ -18,14 +17,14 @@
     </modules>
 
     <dependencyManagement>
+        <!-- Limit usage of external lib as much as possible -->
         <dependencies>
-            <!-- Limit usage of external lib as much as possible -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.6.6</version>
-                <type>pom</type>
+                <version>2.7.4</version>
                 <scope>import</scope>
+                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -7,7 +7,7 @@ import com.ebay.pmt2.ejmask.extenstion.builder.AbstractRegexPatternBuilder;
  *
  * @author prakv
  */
-public class FullValueMaskJsonPatternBuilder extends AbstractRegexPatternBuilder {
+public class JsonFullValuePatternBuilder extends AbstractRegexPatternBuilder {
 
     //https://regex101.com/r/ZDQWod/7
     //todo this may need optimization as this breaks the encoded json syntax though it removes sensitive data.

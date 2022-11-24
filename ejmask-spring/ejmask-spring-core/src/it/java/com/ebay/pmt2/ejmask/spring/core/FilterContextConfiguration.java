@@ -5,8 +5,8 @@ import com.ebay.pmt2.ejmask.api.IFilter;
 import com.ebay.pmt2.ejmask.api.MaskingPattern;
 import com.ebay.pmt2.ejmask.core.BaseFilter;
 import com.ebay.pmt2.ejmask.extenstion.builder.header.HeaderFieldPatternBuilder;
-import com.ebay.pmt2.ejmask.extenstion.builder.json.FullValueMaskJsonPatternBuilder;
 import com.ebay.pmt2.ejmask.extenstion.builder.json.JsonFieldPatternBuilder;
+import com.ebay.pmt2.ejmask.extenstion.builder.json.JsonFullValuePatternBuilder;
 import com.ebay.pmt2.ejmask.extenstion.builder.json.JsonRelativeFieldPatternBuilder;
 import com.ebay.pmt2.ejmask.extenstion.preprocessor.ContentSlicerPreProcessor;
 import org.springframework.context.annotation.Bean;
@@ -122,27 +122,27 @@ public class FilterContextConfiguration {
     @Bean
     @Scope(value = "singleton", proxyMode = ScopedProxyMode.DEFAULT)
     public IFilter getLest10() {
-        return new BaseFilter(FullValueMaskJsonPatternBuilder.class, 0, 10,
+        return new BaseFilter(JsonFullValuePatternBuilder.class, 0, 10,
                 "recipient", "idNumber", "cardNumber", "expiry", "cvc", "expiryMonth", "expiryYear", "number", "cardHolderName", "expiryDate", "dateOfBirth", "bankCity", "bankCode", "bankName", "ownerDateOfBirth", "ownerState", "primaryAccount");
     }
 
     @Bean
     @Scope(value = "singleton", proxyMode = ScopedProxyMode.DEFAULT)
     public IFilter getLest10_duplicate_1() {
-        return new BaseFilter(FullValueMaskJsonPatternBuilder.class, 0, 10, "recipient", "idNumber", "cardNumber", "expiry", "cvc", "expiryMonth", "expiryYear");
+        return new BaseFilter(JsonFullValuePatternBuilder.class, 0, 10, "recipient", "idNumber", "cardNumber", "expiry", "cvc", "expiryMonth", "expiryYear");
     }
 
     @Bean
     @Scope(value = "singleton", proxyMode = ScopedProxyMode.DEFAULT)
     public IFilter getLest10_duplicate_2() {
-        return new BaseFilter(FullValueMaskJsonPatternBuilder.class, 0, 15, "dateOfBirth", "bankCity", "bankCode", "bankName", "ownerDateOfBirth", "ownerState", "primaryAccount");
+        return new BaseFilter(JsonFullValuePatternBuilder.class, 0, 15, "dateOfBirth", "bankCity", "bankCode", "bankName", "ownerDateOfBirth", "ownerState", "primaryAccount");
     }
 
     @Bean
     @Scope(value = "singleton", proxyMode = ScopedProxyMode.DEFAULT)
     public IFilter getLest100() {
         //all these should be ignored.
-        return new BaseFilter(FullValueMaskJsonPatternBuilder.class, 1000, 1,
+        return new BaseFilter(JsonFullValuePatternBuilder.class, 1000, 1,
                 "recipient", "idNumber", "cardNumber", "expiry", "cvc", "expiryMonth", "expiryYear", "number", "cardHolderName", "expiryDate", "dateOfBirth", "bankCity", "bankCode", "bankName", "ownerDateOfBirth", "ownerState", "primaryAccount");
     }
 
