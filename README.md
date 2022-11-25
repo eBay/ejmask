@@ -50,7 +50,10 @@ A few usecase we can use is to decode and encode the sting before masking or to 
 
 In case if you need to override the default logging library with the one you choose, just implement `ILogProvider`.
 
-## Usage
+## Getting Started
+
+### Supported Languages
+eJMask is created as a Maven based Java project and can be used as a dependency in a Java based application or other JVM based languages such as Kotlin, Groovy, Scala etc.
 
 ### Manual configuration.
 
