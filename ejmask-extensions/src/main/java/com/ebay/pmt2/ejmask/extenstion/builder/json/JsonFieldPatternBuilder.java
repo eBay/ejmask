@@ -4,7 +4,7 @@ package com.ebay.pmt2.ejmask.extenstion.builder.json;
 import com.ebay.pmt2.ejmask.extenstion.builder.AbstractRegexPatternBuilder;
 
 /**
- * An implementation of IPatternBuilder to support sensitive JSON field, who's value need to be partially masked.
+ * An implementation of IPatternBuilder to support sensitive JSON field, whose value need to be partially masked.
  *
  * @author prakv
  */

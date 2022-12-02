@@ -72,7 +72,7 @@ public class EJMaskInitializer {
     }
 
     /**
-     * Register the given list of IContentPreProcessor. once added we wont be
+     * Register the given list of IContentPreProcessor. once added we won't be
      * able to de register these IContentPreProcessors
      *
      * @param contentProcessors new value of contentProcessors
@@ -82,7 +82,7 @@ public class EJMaskInitializer {
     }
 
     /**
-     * Register the given list of IContentPreProcessor. once added we wont be
+     * Register the given list of IContentPreProcessor. once added we won't be
      * able to de register these IContentPreProcessors
      *
      * @param contentProcessors new value of contentProcessors
@@ -179,8 +179,8 @@ public class EJMaskInitializer {
      */
     private static List<Filter> removeDuplicatesAndBuildFilterGroups(@Nonnull Collection<IFilter> filters) {
         List<Filter> filterGroups = new LinkedList<>();
-        Map<Class, Map<String, IFilter>> groupedByBuilder = groupByBuilderType(filters);
-        for (Map.Entry<Class, Map<String, IFilter>> entry : groupedByBuilder.entrySet()) {
+        Map<Class<? extends IPatternBuilder>, Map<String, IFilter>> groupedByBuilder = groupByBuilderType(filters);
+        for (Map.Entry<Class<? extends IPatternBuilder>, Map<String, IFilter>> entry : groupedByBuilder.entrySet()) {
             filterGroups.addAll(groupByOrderAndVisibleCharacters(entry.getKey(), entry.getValue()));
         }
         return filterGroups;
@@ -195,8 +195,8 @@ public class EJMaskInitializer {
      * @return Builder name to filter name group
      */
     @Nonnull
-    private static Map<Class, Map<String, IFilter>> groupByBuilderType(@Nonnull Collection<IFilter> filters) {
-        Map<Class, Map<String, IFilter>> builderGroup = new HashMap<>();
+    private static Map<Class<? extends IPatternBuilder>, Map<String, IFilter>> groupByBuilderType(@Nonnull Collection<IFilter> filters) {
+        Map<Class<? extends IPatternBuilder>, Map<String, IFilter>> builderGroup = new HashMap<>();
         for (IFilter currentFilter : filters) {
             if (CommonUtils.isNotAnEmptyArray(currentFilter.getFieldNames())) {
                 //this operation is to avoid duplicate field names with in builder.
@@ -233,9 +233,7 @@ public class EJMaskInitializer {
         for (Map.Entry<String, IFilter> entry : fieldNameToFilterMapping.entrySet()) {
             IFilter ifilter = entry.getValue();
             String key = buildGroupKey(ifilter);
-            if (!groupingMap.containsKey(key)) {
-                groupingMap.put(key, new Filter(ifilter.getOrder(), ifilter.getVisibleCharacters(), builder));
-            }
+            groupingMap.computeIfAbsent(key, (k) -> new Filter(ifilter.getOrder(), ifilter.getVisibleCharacters(), builder));
             groupingMap.get(key).add(entry.getKey());
         }
         return new ArrayList<>(groupingMap.values());
@@ -249,11 +247,8 @@ public class EJMaskInitializer {
      * @return as value.
      */
     @Nonnull
-    private static Map<String, IFilter> getOrPutNewIfNull(Map<Class, Map<String, IFilter>> map, Class key) {
-        if (!map.containsKey(key)) {
-            map.put(key, new HashMap<>());
-        }
-        return map.get(key);
+    private static Map<String, IFilter> getOrPutNewIfNull(Map<Class<? extends IPatternBuilder>, Map<String, IFilter>> map, Class<? extends IPatternBuilder> key) {
+        return map.computeIfAbsent(key, (k) -> new HashMap<>());
     }
 
     /**
@@ -281,7 +276,7 @@ public class EJMaskInitializer {
     }
 
     /**
-     * Convert the given list into a sorted String array. Sorting does't have
+     * Convert the given list into a sorted String array. Sorting doesn't have
      * any impact on functionality. bellow are the reasons when we are
      * performing
      * <pre>

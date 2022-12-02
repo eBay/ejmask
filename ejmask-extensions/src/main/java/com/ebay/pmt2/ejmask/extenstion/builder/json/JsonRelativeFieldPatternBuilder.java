@@ -4,7 +4,7 @@ import com.ebay.pmt2.ejmask.api.IPatternBuilder;
 import com.ebay.pmt2.ejmask.core.util.CommonUtils;
 
 /**
- * An implementation of IPatternBuilder to support sensitive JSON field, who's
+ * An implementation of IPatternBuilder to support sensitive JSON field, whose
  * value need to be partially masked with relative field
  *
  * @author manperumal

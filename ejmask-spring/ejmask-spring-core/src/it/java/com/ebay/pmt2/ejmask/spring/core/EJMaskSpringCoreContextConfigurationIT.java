@@ -6,7 +6,6 @@ import com.ebay.pmt2.ejmask.core.EJMaskInitializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
@@ -37,9 +36,7 @@ import java.util.Collection;
 @ContextConfiguration(classes = {FilterContextConfiguration.class}, loader = AnnotationConfigContextLoader.class)
 public class EJMaskSpringCoreContextConfigurationIT {
 
-    private static int counter = 0;
-
-    @Parameterized.Parameter(0)
+    @Parameterized.Parameter
     public String testName;
 
     @Parameterized.Parameter(1)
@@ -64,24 +61,17 @@ public class EJMaskSpringCoreContextConfigurationIT {
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() throws Exception {
-        return Arrays.asList(new Object[][]{
-                new Object[]{"testEmpty", "", ""},
+        return Arrays.asList(new Object[]{"testEmpty", "", ""},
                 testJson(),
                 testHTTPHeaders(),
                 testFlatString(),
                 test_big_string(),
                 //always last
-                test_largeData(),
-        });
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
+                test_largeData());
     }
 
     /**
-     * This test validate the the given string is masked as expected.
+     * This test validate the given string is masked as expected.
      */
     @Test
     public void test1_verify_the_request_is_masked_as_expected() {
@@ -91,7 +81,7 @@ public class EJMaskSpringCoreContextConfigurationIT {
     }
 
     /**
-     * This test validate the the given string is masked as expected. in case the string got json encoded.
+     * This test validate the given string is masked as expected. in case the string got json encoded.
      */
     @Test
     public void test2_verify_the_request_is_masked_as_expected_even_if_the_string_got_json_serialized() throws Exception {

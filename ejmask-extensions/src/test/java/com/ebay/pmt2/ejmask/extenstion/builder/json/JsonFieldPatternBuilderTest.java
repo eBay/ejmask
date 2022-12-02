@@ -105,7 +105,7 @@ public class JsonFieldPatternBuilderTest {
 
                 ),
 
-                /**
+                /*
                  * TODO: json formatting is little messed up due to limitation
                  * of regex. commented the expected.
                  */

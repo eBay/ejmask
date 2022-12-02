@@ -10,7 +10,7 @@ public interface IContentProcessor {
     int DEFAULT_ORDER = 50;
 
     /**
-     * Return Name of the pre processor for debugging
+     * Return Name of the pre-processor for debugging
      *
      * @return Name of preprocessor
      */

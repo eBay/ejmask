@@ -43,7 +43,7 @@ All types of contributions from minor documentation changes to new capabilities,
 ** Do not assume the code is self-evident/self-documenting
 ** Describe any limitations of the current code
 * Any significant changes should be accompanied by tests.
-* The project already has good test coverage, so look at some of the existing tests if you're unsure how to go about it.
+* The project already has good test coverage, so look at someofthe existing tests if you're unsure how to go about it.
 * Please squash all commits for a change into a single commit (this can be done using `git rebase -i`).
 
 == Commit Message Guidelines

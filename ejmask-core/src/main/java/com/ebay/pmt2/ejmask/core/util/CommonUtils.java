@@ -18,7 +18,7 @@ public class CommonUtils {
      * @param coll the collection to check, may be null
      * @return true if empty or null
      */
-    public static boolean isEmpty(Collection coll) {
+    public static <T> boolean isEmpty(Collection<T> coll) {
         return (coll == null || coll.isEmpty());
     }
 
@@ -28,7 +28,7 @@ public class CommonUtils {
      * @param coll the collection to check, may be null
      * @return true if non-null and non-empty
      */
-    public static boolean isNotEmpty(Collection coll) {
+    public static <T> boolean isNotEmpty(Collection<T> coll) {
         return !CommonUtils.isEmpty(coll);
     }
 
@@ -40,7 +40,7 @@ public class CommonUtils {
      * @return an empty list if the argument is <code>null</code>
      */
     public static <T> Collection<T> emptyIfNull(Collection<T> collection) {
-        return isEmpty(collection) ? Collections.EMPTY_LIST : collection;
+        return isEmpty(collection) ? Collections.emptyList() : collection;
     }
 
     /**

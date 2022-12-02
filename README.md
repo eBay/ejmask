@@ -32,7 +32,7 @@ public class EJMaskExample {
 
 ### IPatternBuilder
 
-`IPatternBuilder` implementations are responsible to generate the regular expression needed to replace data to be masked..
+`IPatternBuilder` implementations are responsible to generate the regular expression needed to replace data to be masked.
 For many standard use cases you can make use of patten builders defined in `ejmask-extensions` module.
 
 - HeaderFieldPatternBuilder

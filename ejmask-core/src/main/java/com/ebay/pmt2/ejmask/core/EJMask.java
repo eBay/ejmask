@@ -27,10 +27,9 @@ public class EJMask {
      *
      * @param preProcessor as list of PreProcessors
      */
-    @SafeVarargs
     static synchronized void register(IContentProcessor... preProcessor) {
         PROCESSORS.addAll(Arrays.asList(preProcessor));
-        Collections.sort(PROCESSORS, Comparator.comparingInt(IContentProcessor::getOrder));
+        PROCESSORS.sort(Comparator.comparingInt(IContentProcessor::getOrder));
     }
 
     /**
@@ -38,7 +37,6 @@ public class EJMask {
      *
      * @param patterns new value of FILTER_PATTERN
      */
-    @SafeVarargs
     static synchronized void register(MaskingPattern... patterns) {
         MASKING_PATTERNS.addAll(Arrays.asList(patterns));
         Collections.sort(MASKING_PATTERNS);
@@ -91,20 +89,6 @@ public class EJMask {
      */
     public static String maskWithOutProcessor(final String content) {
         return mask(content, false, false);
-    }
-
-    /**
-     * Find and mask any pre-configured sensitive data into filter group
-     *
-     * @param content               as sting which need to be masked
-     * @param preProcessingRequired as boolean whether pre-processing step
-     *                              required
-     * @return cleaned up string
-     * @deprecated use mask (content,preProcessingRequired,postProcessingRequired) method.
-     */
-    @Deprecated
-    private static String mask(final String content, boolean preProcessingRequired) {
-        return mask(content, preProcessingRequired, false);
     }
 
     /**

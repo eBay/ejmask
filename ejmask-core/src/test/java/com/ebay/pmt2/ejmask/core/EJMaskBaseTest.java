@@ -22,7 +22,7 @@ abstract class EJMaskBaseTest {
             field.setAccessible(true);
             Object value = field.get(null);
             if (value instanceof List) {
-                List.class.cast(value).clear();
+                ((List<?>) value).clear();
             }
         }
     }

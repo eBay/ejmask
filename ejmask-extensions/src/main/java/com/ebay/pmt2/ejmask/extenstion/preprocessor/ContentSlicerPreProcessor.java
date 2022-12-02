@@ -40,7 +40,7 @@ public class ContentSlicerPreProcessor implements IContentProcessor {
     }
 
     /**
-     * Return Name of the pre processor for debugging
+     * Return Name of the pre-processor for debugging
      *
      * @return Name of preprocessor
      */

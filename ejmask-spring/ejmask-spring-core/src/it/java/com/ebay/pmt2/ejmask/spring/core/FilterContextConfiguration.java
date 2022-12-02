@@ -29,7 +29,7 @@ public class FilterContextConfiguration {
     }
 
     /**
-     * This class creates bunch of duplicate filters and configuration. its the
+     * This class creates bunch of duplicate filters and configuration. It's the
      * responsibility of the initializer to dedupe them.
      */
     @Bean

@@ -45,8 +45,11 @@ public class MaskingPattern implements Comparable<MaskingPattern> {
     @Override
     public int compareTo(MaskingPattern that) {
         if (that.order == this.order) {
+            if (that.pattern.pattern().length() == this.pattern.pattern().length()) {
+                return 0;
+            }
             //one with more filters can go to the top
-            return (that.pattern.pattern().length() >= this.pattern.pattern().length()) ? -1 : 1;
+            return (that.pattern.pattern().length() > this.pattern.pattern().length()) ? -1 : 1;
         }
         return (that.order > this.order) ? -1 : 1;
     }

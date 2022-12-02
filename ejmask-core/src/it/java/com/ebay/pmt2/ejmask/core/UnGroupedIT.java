@@ -1,6 +1,5 @@
 package com.ebay.pmt2.ejmask.core;
 
-import com.ebay.pmt2.ejmask.api.IContentProcessor;
 import org.junit.jupiter.api.BeforeEach;
 
 /**

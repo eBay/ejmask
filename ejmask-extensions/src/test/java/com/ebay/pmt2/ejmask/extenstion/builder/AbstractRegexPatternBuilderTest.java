@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
  */
 public class AbstractRegexPatternBuilderTest {
 
-    AbstractRegexPatternBuilder instance = new AbstractRegexPatternBuilderImpl();
+    final AbstractRegexPatternBuilder instance = new AbstractRegexPatternBuilderImpl();
 
 
     /**

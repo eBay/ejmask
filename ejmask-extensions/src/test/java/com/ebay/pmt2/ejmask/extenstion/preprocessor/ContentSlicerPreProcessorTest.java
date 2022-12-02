@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
  */
 public class ContentSlicerPreProcessorTest {
 
-    ContentSlicerPreProcessor instance = new ContentSlicerPreProcessor();
+    final ContentSlicerPreProcessor instance = new ContentSlicerPreProcessor();
 
     /**
      * Test of getName method, of class ContentSlicerPreProcessor.

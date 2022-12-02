@@ -72,7 +72,7 @@ public abstract class AbstractIT {
     }
 
     @TestData
-    private static Arguments getMultiLevel() throws Exception {
+    private static Arguments getMultiLevel() {
         String actual = "{\n" +
                 "  \"mixed_data\": \"dummy data\",\n" +
                 "  \"sensitive_data\": \"sensitiveData\",\n" +
@@ -249,7 +249,7 @@ public abstract class AbstractIT {
 
     private static int counter = 0;
 
-    static Stream<Arguments> dataForTestMatch() throws Exception {
+    static Stream<Arguments> dataForTestMatch() {
         Method[] methods = AbstractIT.class.getDeclaredMethods();
         return Arrays.stream(methods)
                 .filter(m -> m.getAnnotation(TestData.class) != null)
@@ -272,7 +272,7 @@ public abstract class AbstractIT {
             field.setAccessible(true);
             Object value = field.get(null);
             if (value instanceof List) {
-                List.class.cast(value).clear();
+                ((List) value).clear();
             }
         }
     }

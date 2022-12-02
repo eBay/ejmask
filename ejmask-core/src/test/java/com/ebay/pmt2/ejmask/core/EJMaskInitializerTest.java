@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author prakv
  */
-public class EJMaskInitializerTest extends EJMaskBaseTest {
+class EJMaskInitializerTest extends EJMaskBaseTest {
 
     static String toString(String partition, String... array) {
         StringBuilder b = new StringBuilder();
@@ -33,7 +34,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of addFilter method, of class EJMaskInitializer.
      */
     @Test
-    public void testAddFilter() {
+    void testAddFilter() {
         EJMaskInitializer.addMaskingPattern(10, "(firstName|lastName)", "xxx");
         Assertions.assertTrue(EJMask.getContentPreProcessors().isEmpty());
     }
@@ -42,7 +43,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setMaskingPatterns method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetMaskingPatterns_null() {
+    void testSetMaskingPatterns_null() {
         EJMaskInitializer.addMaskingPatterns(null);
         Assertions.assertTrue(EJMask.getMaskingPatterns().isEmpty());
     }
@@ -51,8 +52,8 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setMaskingPatterns method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetMaskingPatterns() {
-        EJMaskInitializer.addMaskingPatterns(Arrays.asList(new MaskingPattern(10, "(firstName|lastName)", "xxx")));
+    void testSetMaskingPatterns() {
+        EJMaskInitializer.addMaskingPatterns(Collections.singletonList(new MaskingPattern(10, "(firstName|lastName)", "xxx")));
         Assertions.assertFalse(EJMask.getMaskingPatterns().isEmpty());
         Assertions.assertEquals(1, EJMask.getMaskingPatterns().size());
         Assertions.assertEquals("order=10;pattern=(firstName|lastName);replacement=xxx", EJMask.getMaskingPatterns().get(0).toString());
@@ -62,7 +63,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setContentPreProcessors method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetContentPreProcessors_null() {
+    void testSetContentPreProcessors_null() {
         List<IContentProcessor> contentPreProcessors = null;
         EJMaskInitializer.addContentProcessors(contentPreProcessors);
         Assertions.assertTrue(EJMask.getContentPreProcessors().isEmpty());
@@ -72,7 +73,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setContentPreProcessors method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetContentPreProcessors_empty() {
+    void testSetContentPreProcessors_empty() {
         List<IContentProcessor> contentPreProcessors = new ArrayList<>();
         EJMaskInitializer.addContentProcessors(contentPreProcessors);
         Assertions.assertTrue(EJMask.getContentPreProcessors().isEmpty());
@@ -82,7 +83,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setContentPreProcessors method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetContentPreProcessors_values() {
+    void testSetContentPreProcessors_values() {
         List<IContentProcessor> contentPreProcessors = Arrays.asList(mock(IContentProcessor.class), mock(IContentProcessor.class), mock(IContentProcessor.class));
         EJMaskInitializer.addContentProcessors(contentPreProcessors);
         Assertions.assertFalse(EJMask.getContentPreProcessors().isEmpty());
@@ -93,7 +94,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setFilters method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetFilters_null() throws Exception {
+    void testSetFilters_null() {
         List<IFilter> filters = null;
         EJMaskInitializer.addFilters(filters);
         Assertions.assertTrue(EJMask.getMaskingPatterns().isEmpty());
@@ -103,7 +104,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setFilters method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetFilters_empty() throws Exception {
+    void testSetFilters_empty() {
         List<IFilter> filters = new LinkedList<>();
         EJMaskInitializer.addFilters(filters);
         Assertions.assertTrue(EJMask.getMaskingPatterns().isEmpty());
@@ -113,8 +114,8 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setFilters method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetFilters_single() throws Exception {
-        List<IFilter> filters = Arrays.asList(
+    void testSetFilters_single() {
+        List<IFilter> filters = Collections.singletonList(
                 this.buildFilter(50, 1, TestPatternBuilder.class, "firstName", "lastName")
         );
         EJMaskInitializer.addFilters(filters);
@@ -127,7 +128,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setFilters method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetFilters_duplicate() throws Exception {
+    void testSetFilters_duplicate() {
         List<IFilter> filters = Arrays.asList(
                 //duplicate
                 this.buildFilter(50, 1, TestPatternBuilder.class, "firstName", "lastName"),
@@ -144,7 +145,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setFilters method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetFilters_nonGroupable() throws Exception {
+    void testSetFilters_nonGroupable() {
         List<IFilter> filters = Arrays.asList(
                 //duplicate
                 this.buildFilter(50, 1, JsonPatternBuilder.class, "user", "name"),
@@ -155,7 +156,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
         Assertions.assertFalse(EJMask.getMaskingPatterns().isEmpty());
         Assertions.assertEquals(3, EJMask.getMaskingPatterns().size());
     }
-    /**
+    /*
      * All the bellow test requires auto adjusting capability. this will be introduced in next iteration.
      */
 
@@ -163,7 +164,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setFilters method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetFilters_duplicate_with_different_priority() throws Exception {
+    void testSetFilters_duplicate_with_different_priority() {
         List<IFilter> filters = Arrays.asList(
                 //duplicate
                 this.buildFilter(70, 1, TestPatternBuilder.class, "firstName", "lastName"),
@@ -180,7 +181,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setFilters method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetFilters_duplicate_with_different_visibility() throws Exception {
+    void testSetFilters_duplicate_with_different_visibility() {
         List<IFilter> filters = Arrays.asList(
                 //duplicate
                 this.buildFilter(50, 15, TestPatternBuilder.class, "firstName", "lastName"),
@@ -197,7 +198,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setFilters method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetFilters_duplicate_with_different_priority_n_visibility() throws Exception {
+    void testSetFilters_duplicate_with_different_priority_n_visibility() {
         List<IFilter> filters = Arrays.asList(
                 this.buildFilter(50, 15, TestPatternBuilder.class),
                 //duplicate
@@ -219,7 +220,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setFilters method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetFilters_duplicate_with_different_builder() throws Exception {
+    void testSetFilters_duplicate_with_different_builder() {
         List<IFilter> filters = Arrays.asList(
                 //duplicate
                 this.buildFilter(50, 1, TestPatternBuilder.class, "lastName", "firstName"),
@@ -238,7 +239,7 @@ public class EJMaskInitializerTest extends EJMaskBaseTest {
      * Test of setFilters method, of class EJMaskInitializer.
      */
     @Test
-    public void testSetFilters_duplicate_with_different_priority_n_visibility_with_multiple_builder() throws Exception {
+    void testSetFilters_duplicate_with_different_priority_n_visibility_with_multiple_builder() {
         List<IFilter> filters = Arrays.asList(
                 this.buildFilter(1, 15, TestPatternBuilder.class),
                 //duplicate
