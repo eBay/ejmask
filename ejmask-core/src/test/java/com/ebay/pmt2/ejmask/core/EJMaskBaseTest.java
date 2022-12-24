@@ -28,7 +28,7 @@ abstract class EJMaskBaseTest {
     }
 
 
-    protected IContentProcessor mockIContentPreProcessor(int order, String name) {
+    protected IContentProcessor mockIContentProcessor(int order, String name) {
         IContentProcessor preProcessor = mock(IContentProcessor.class);
         when(preProcessor.getOrder()).thenReturn(order);
         when(preProcessor.getName()).thenReturn(name);

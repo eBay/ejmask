@@ -36,7 +36,7 @@ class EJMaskInitializerTest extends EJMaskBaseTest {
     @Test
     void testAddFilter() {
         EJMaskInitializer.addMaskingPattern(10, "(firstName|lastName)", "xxx");
-        Assertions.assertTrue(EJMask.getContentPreProcessors().isEmpty());
+        Assertions.assertTrue(EJMask.getContentProcessors().isEmpty());
     }
 
     /**
@@ -66,7 +66,7 @@ class EJMaskInitializerTest extends EJMaskBaseTest {
     void testSetContentPreProcessors_null() {
         List<IContentProcessor> contentPreProcessors = null;
         EJMaskInitializer.addContentProcessors(contentPreProcessors);
-        Assertions.assertTrue(EJMask.getContentPreProcessors().isEmpty());
+        Assertions.assertTrue(EJMask.getContentProcessors().isEmpty());
     }
 
     /**
@@ -76,7 +76,7 @@ class EJMaskInitializerTest extends EJMaskBaseTest {
     void testSetContentPreProcessors_empty() {
         List<IContentProcessor> contentPreProcessors = new ArrayList<>();
         EJMaskInitializer.addContentProcessors(contentPreProcessors);
-        Assertions.assertTrue(EJMask.getContentPreProcessors().isEmpty());
+        Assertions.assertTrue(EJMask.getContentProcessors().isEmpty());
     }
 
     /**
@@ -86,8 +86,8 @@ class EJMaskInitializerTest extends EJMaskBaseTest {
     void testSetContentPreProcessors_values() {
         List<IContentProcessor> contentPreProcessors = Arrays.asList(mock(IContentProcessor.class), mock(IContentProcessor.class), mock(IContentProcessor.class));
         EJMaskInitializer.addContentProcessors(contentPreProcessors);
-        Assertions.assertFalse(EJMask.getContentPreProcessors().isEmpty());
-        Assertions.assertEquals(3, EJMask.getContentPreProcessors().size());
+        Assertions.assertFalse(EJMask.getContentProcessors().isEmpty());
+        Assertions.assertEquals(3, EJMask.getContentProcessors().size());
     }
 
     /**

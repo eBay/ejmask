@@ -12,6 +12,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,20 +26,24 @@ class EJMaskTest extends EJMaskBaseTest {
      * Test of register method, of class EJMask.
      */
     @Test
-    void testRegister_IContentPreProcessorArr() {
-        EJMask.register(super.mockIContentPreProcessor(20, "mock-per-processor-20"));
-        EJMask.register(super.mockIContentPreProcessor(10, "mock-per-processor-10"));
-        Assertions.assertEquals(10, EJMask.getContentPreProcessors().get(0).getOrder());
-        Assertions.assertEquals(20, EJMask.getContentPreProcessors().get(1).getOrder());
+    void testRegister_IContentProcessor_verify_sort() {
+        EJMask.register(super.mockIContentProcessor(20, "mock-processor-20"));
+        EJMask.register(super.mockIContentProcessor(10, "mock-processor-10"));
+        //then
+        Assertions.assertEquals(2, EJMask.getContentProcessors().size());
+        Assertions.assertEquals(10, EJMask.getContentProcessors().get(0).getOrder());
+        Assertions.assertEquals(20, EJMask.getContentProcessors().get(1).getOrder());
     }
 
     /**
      * Test of register method, of class EJMask.
      */
     @Test
-    void testRegister_MaskingPatternArr() {
+    void testRegister_MaskingPattern_verify_sort() {
         EJMask.register(new MaskingPattern(50, "(auth)=([^\\\"]{1,10})[^&]*", "$1xxxx"));
         EJMask.register(new MaskingPattern(10, "(X-API-Key|PayPal-Auth-Assertionsion)=([^\\\"]{1,10})[^&]*", "$1****"));
+        //then
+        Assertions.assertEquals(2, EJMask.getMaskingPatterns().size());
         Assertions.assertEquals(10, this.getThroughReflection(EJMask.getMaskingPatterns().get(0), "order"));
         Assertions.assertEquals(50, this.getThroughReflection(EJMask.getMaskingPatterns().get(1), "order"));
     }
@@ -51,6 +56,7 @@ class EJMaskTest extends EJMaskBaseTest {
     void testAddFilter() {
         EJMask.addFilter(50, "(auth)=([^\\\"]{1,10})[^&]*", "$1xxxx");
         EJMask.addFilter(10, "(X-API-Key|PayPal-Auth-Assertionsion)=([^\\\"]{1,10})[^&]*", "$1****");
+        //then
         Assertions.assertEquals(10, this.getThroughReflection(EJMask.getMaskingPatterns().get(0), "order"));
         Assertions.assertEquals(50, this.getThroughReflection(EJMask.getMaskingPatterns().get(1), "order"));
     }
@@ -80,7 +86,7 @@ class EJMaskTest extends EJMaskBaseTest {
      */
     @Test
     void testMask_fail_safe() {
-        IContentProcessor preProcessor = this.mockIContentPreProcessor(10, "mock-per-processor-10");
+        IContentProcessor preProcessor = this.mockIContentProcessor(10, "mock-processor-10");
         when(preProcessor.preProcess(anyString())).thenThrow(new RuntimeException("mock exception please ignore"));
         EJMask.register(preProcessor);
         EJMask.addFilter(50, "(auth)=([^\\\"]{1,10})[^&]*", "$1xxxx");
@@ -93,7 +99,7 @@ class EJMaskTest extends EJMaskBaseTest {
      * Test of mask method, of class EJMask.
      */
     @Test
-    void testMask_without_preprocessor_without_any_filter() {
+    void testMask_without_processor_without_any_filter() {
         String content = "{\"firstName\":\"sensitive data\",\"lastName\":\"sensitive data\",\"nonSensitiveData\":\"firstName\"}";
         String result = EJMask.mask(content);
         Assertions.assertEquals(content, result);
@@ -103,7 +109,7 @@ class EJMaskTest extends EJMaskBaseTest {
      * Test of mask method, of class EJMask.
      */
     @Test
-    void testMask_without_preprocessor_without_any_matching_filter() {
+    void testMask_without_processor_without_any_matching_filter() {
         EJMask.addFilter(50, "(auth)=([^\\\"]{1,10})[^&]*", "$1xxxx");
         String content = "{\"firstName\":\"sensitive data\",\"lastName\":\"sensitive data\",\"nonSensitiveData\":\"firstName\"}";
         String result = EJMask.mask(content);
@@ -114,7 +120,7 @@ class EJMaskTest extends EJMaskBaseTest {
      * Test of mask method, of class EJMask.
      */
     @Test
-    void testMask_without_preprocessor_with_a_matching_filter() {
+    void testMask_without_processor_with_a_matching_filter() {
         EJMask.addFilter(50, "\\\"(firstName|lastName)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,3})[^\\\"]*(\\\\?\\\"|)", "\"$1$2$3-xxxx$4");
         String content = "{\"firstName\":\"sensitive data\",\"lastName\":\"sensitive data\",\"nonSensitiveData\":\"firstName\"}";
         String result = EJMask.mask(content);
@@ -126,7 +132,7 @@ class EJMaskTest extends EJMaskBaseTest {
      * Test of mask method, of class EJMask.
      */
     @Test
-    void testMask_without_preprocessor_with_a_matching_filter_amount_multipe_with_same_order() {
+    void testMask_without_processor_with_a_matching_filter_amount_multipe_with_same_order() {
         EJMask.addFilter(50, "\\\"(address1|address2)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,3})[^\\\"]*(\\\\?\\\"|)", "\"$1$2$3-xxxx$4");
         EJMask.addFilter(50, "\\\"(firstName|lastName)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,3})[^\\\"]*(\\\\?\\\"|)", "\"$1$2$3-xxxx$4");
         EJMask.addFilter(50, "\\\"(phoneNumber|number)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,3})[^\\\"]*(\\\\?\\\"|)", "\"$1$2$3-xxxx$4");
@@ -141,7 +147,7 @@ class EJMaskTest extends EJMaskBaseTest {
      * Test of mask method, of class EJMask.
      */
     @Test
-    void testMask_without_preprocessor_with_a_matching_filter_amount_multipe_with_different_order() {
+    void testMask_without_processor_with_a_matching_filter_amount_multipe_with_different_order() {
         EJMask.addFilter(10, "(auth)=([^\\\"]{1,10})[^&]*", "$1xxxx");
         EJMask.addFilter(95, "\\\"(address1|address2)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,3})[^\\\"]*(\\\\?\\\"|)", "\"$1$2$3-xxxx$4");
         EJMask.addFilter(40, "\\\"(firstName|lastName)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,3})[^\\\"]*(\\\\?\\\"|)", "\"$1$2$3-xxxx$4");
@@ -157,15 +163,15 @@ class EJMaskTest extends EJMaskBaseTest {
      * Test of mask method, of class EJMask.
      */
     @Test
-    void testMask_without_preprocessor_with_unmatching_preprocessor() {
-        EJMask.register(this.mockIContentPreProcessor(10, "mock-per-processor-10", new ProcessorResult(true)));
-        EJMask.register(this.mockIContentPreProcessor(20, "mock-per-processor-20", new ProcessorResult(true)));
+    void testMask_without_processor_with_unmatching_processor() {
+        EJMask.register(this.mockIContentProcessor(10, "mock-processor-10", new ProcessorResult(true)));
+        EJMask.register(this.mockIContentProcessor(20, "mock-processor-20", new ProcessorResult(true)));
         EJMask.addFilter(50, "\\\"(firstName|lastName)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,3})[^\\\"]*(\\\\?\\\"|)", "\"$1$2$3-xxxx$4");
         String content = "{\"firstName\":\"sensitive data\",\"lastName\":\"sensitive data\",\"nonSensitiveData\":\"firstName\"}";
         String result = EJMask.mask(content);
         String expected = "{\"firstName\":\"sen-xxxx\",\"lastName\":\"sen-xxxx\",\"nonSensitiveData\":\"firstName\"}";
         Assertions.assertEquals(expected, result);
-        List<IContentProcessor> prepros = EJMask.getContentPreProcessors();
+        List<IContentProcessor> prepros = EJMask.getContentProcessors();
         for (IContentProcessor mock : prepros) {
             verify(mock, times(1)).preProcess(eq(content));
         }
@@ -175,41 +181,51 @@ class EJMaskTest extends EJMaskBaseTest {
      * Test of mask method, of class EJMask.
      */
     @Test
-    void testMask_without_preprocessor_with_matching_preprocessor1_breaks_chain() {
-        EJMask.register(this.mockIContentPreProcessor(10, "mock-per-processor-10", new ProcessorResult(false)));
-        EJMask.register(this.mockIContentPreProcessor(20, "mock-per-processor-20", new ProcessorResult(true, "wrong data")));
+    void testMask_without_processor_with_matching_processor1_breaks_chain() {
+        EJMask.register(this.mockIContentProcessor(10, "mock-processor-10", new ProcessorResult(false)));
+        EJMask.register(this.mockIContentProcessor(20, "mock-processor-20", new ProcessorResult(true, "wrong data")));
         EJMask.addFilter(50, "\\\"(firstName|lastName)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,3})[^\\\"]*(\\\\?\\\"|)", "\"$1$2$3-xxxx$4");
         String content = "{\"firstName\":\"sensitive data\",\"lastName\":\"sensitive data\",\"nonSensitiveData\":\"firstName\"}";
+        //when
         String result = EJMask.mask(content);
+        //then
         String expected = "{\"firstName\":\"sen-xxxx\",\"lastName\":\"sen-xxxx\",\"nonSensitiveData\":\"firstName\"}";
         Assertions.assertEquals(expected, result);
-        List<IContentProcessor> prepros = EJMask.getContentPreProcessors();
-        verify(prepros.get(0), times(1)).preProcess(anyString());
-        verify(prepros.get(0), times(1)).postProcess(anyString());
+        verify(EJMask.getContentProcessors().get(0), times(1)).preProcess(anyString());
+        verify(EJMask.getContentProcessors().get(0), times(1)).postProcess(anyString());
+        verify(EJMask.getContentProcessors().get(1), never()).preProcess(anyString());
+        verify(EJMask.getContentProcessors().get(1), times(1)).postProcess(anyString());
     }
 
     /**
      * Test of mask method, of class EJMask.
      */
     @Test
-    void testMask_without_preprocessor_with_matching_preprocessor3_breaks_chain() {
+    void testMask_without_processor_with_matching_processor3_breaks_chain() {
         String content = "{\"firstName\":\"sensitive data\",\"lastName\":\"sensitive data\",\"nonSensitiveData\":\"firstName\"}";
-        EJMask.register(this.mockIContentPreProcessor(10, "mock-per-processor-10", new ProcessorResult(true), "start_keyword"));
-        EJMask.register(this.mockIContentPreProcessor(20, "mock-per-processor-20", new ProcessorResult(true, "breaking_keyword")));
-        EJMask.register(this.mockIContentPreProcessor(30, "mock-per-processor-30", new ProcessorResult(false, content), "breaking_keyword"));
-        EJMask.register(this.mockIContentPreProcessor(40, "mock-per-processor-40", new ProcessorResult(true, "wrong data")));
+        EJMask.register(this.mockIContentProcessor(10, "mock-processor-10", new ProcessorResult(true), "start_keyword"));
+        EJMask.register(this.mockIContentProcessor(20, "mock-processor-20", new ProcessorResult(true, "breaking_keyword")));
+        EJMask.register(this.mockIContentProcessor(30, "mock-processor-30", new ProcessorResult(false, content), "breaking_keyword"));
+        EJMask.register(this.mockIContentProcessor(40, "mock-processor-40", new ProcessorResult(true, "wrong data")));
         EJMask.addFilter(50, "\\\"(firstName|lastName)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,3})[^\\\"]*(\\\\?\\\"|)", "\"$1$2$3-xxxx$4");
         //when
         String result = EJMask.mask("start_keyword");
+        //then
         String expected = "{\"firstName\":\"sen-xxxx\",\"lastName\":\"sen-xxxx\",\"nonSensitiveData\":\"firstName\"}";
         Assertions.assertEquals(expected, result);
-        List<IContentProcessor> prepros = EJMask.getContentPreProcessors();
+        List<IContentProcessor> prepros = EJMask.getContentProcessors();
         verify(prepros.get(0), times(1)).preProcess(anyString());
-        verify(prepros.get(0), times(1)).preProcess(anyString());
+        verify(prepros.get(0), times(1)).postProcess(anyString());
+        verify(prepros.get(1), times(1)).preProcess(anyString());
+        verify(prepros.get(1), times(1)).postProcess(anyString());
+        verify(prepros.get(2), times(1)).preProcess(anyString());
+        verify(prepros.get(2), times(1)).postProcess(anyString());
+        verify(prepros.get(3), never()).preProcess(anyString());// supposed to break
+        verify(prepros.get(3), times(1)).postProcess(anyString());
     }
 
-    private IContentProcessor mockIContentPreProcessor(int order, String name, ProcessorResult result, String... match) {
-        IContentProcessor preProcessor = this.mockIContentPreProcessor(order, name);
+    private IContentProcessor mockIContentProcessor(int order, String name, ProcessorResult result, String... match) {
+        IContentProcessor preProcessor = this.mockIContentProcessor(order, name);
         if (CommonUtils.isNotAnEmptyArray(match)) {
             when(preProcessor.preProcess(eq(match[0]))).thenReturn(result);
         } else {

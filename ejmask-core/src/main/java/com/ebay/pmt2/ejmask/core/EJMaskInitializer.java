@@ -149,7 +149,7 @@ public class EJMaskInitializer {
      * @return list of configured IContentPreProcessor
      */
     public static List<IContentProcessor> getContentPreProcessors() {
-        return EJMask.getContentPreProcessors();
+        return EJMask.getContentProcessors();
     }
 
     /**

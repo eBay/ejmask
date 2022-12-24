@@ -40,6 +40,7 @@ public class EJMask {
     static synchronized void register(MaskingPattern... patterns) {
         MASKING_PATTERNS.addAll(Arrays.asList(patterns));
         Collections.sort(MASKING_PATTERNS);
+        mask("Note: this is to prime internal java classes for first time hit performance.", false, false);
     }
 
     /**
@@ -56,7 +57,7 @@ public class EJMask {
      *
      * @return the value of IContentPreProcessor
      */
-    static List<IContentProcessor> getContentPreProcessors() {
+    static List<IContentProcessor> getContentProcessors() {
         return Collections.unmodifiableList(PROCESSORS);
     }
 
@@ -99,7 +100,7 @@ public class EJMask {
      * @param postProcessingRequired as boolean whether post-processing step required
      * @return cleaned up string
      */
-    private static String mask(final String content, boolean preProcessingRequired, boolean postProcessingRequired) {
+    public static String mask(final String content, boolean preProcessingRequired, boolean postProcessingRequired) {
         try {
             //filterPattern on original content
             if (CommonUtils.isBlank(content)) {
