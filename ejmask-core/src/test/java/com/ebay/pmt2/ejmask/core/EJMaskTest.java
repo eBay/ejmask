@@ -163,6 +163,26 @@ class EJMaskTest extends EJMaskBaseTest {
      * Test of mask method, of class EJMask.
      */
     @Test
+    void testMask_with_timeout() {
+        IContentProcessor processor = this.mockIContentProcessor(10, "mock-processor-10", new ProcessorResult(true));
+        when(processor.preProcess(anyString())).thenAnswer((i) -> {
+            Thread.sleep(1000);
+            return new ProcessorResult(true, i.getArgument(0, String.class));
+        });
+        EJMask.register(processor);
+        EJMask.addFilter(50, "\\\"(firstName|lastName)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,3})[^\\\"]*(\\\\?\\\"|)", "\"$1$2$3-xxxx$4");
+        String content = "{\"firstName\":\"sensitive data\",\"lastName\":\"sensitive data\",\"nonSensitiveData\":\"firstName\"}";
+        //when
+        String result = EJMask.mask(content, 500);
+        //then
+        Assertions.assertNull(result);
+        verify(processor, times(1)).preProcess(eq(content));
+    }
+
+    /**
+     * Test of mask method, of class EJMask.
+     */
+    @Test
     void testMask_without_processor_with_unmatching_processor() {
         EJMask.register(this.mockIContentProcessor(10, "mock-processor-10", new ProcessorResult(true)));
         EJMask.register(this.mockIContentProcessor(20, "mock-processor-20", new ProcessorResult(true)));

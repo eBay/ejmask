@@ -4,12 +4,14 @@ import com.ebay.pmt2.ejmask.api.IContentProcessor;
 import com.ebay.pmt2.ejmask.api.MaskingPattern;
 import com.ebay.pmt2.ejmask.api.ProcessorResult;
 import com.ebay.pmt2.ejmask.core.util.CommonUtils;
+import com.ebay.pmt2.ejmask.core.util.ExecutorUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Class to mask any occurrence of sensitive data using preconfigured regular expression.
@@ -80,6 +82,30 @@ public class EJMask {
      */
     public static String mask(final String content) {
         return mask(content, true, true);
+    }
+
+    /**
+     * Find and mask any pre-configured sensitive data into filter group
+     *
+     * @param content     as sting which need to be masked
+     * @param timeOutInMs as time out in mill sec
+     * @return cleaned up string
+     */
+    public static String mask(String content, long timeOutInMs) {
+        return mask(content, true, true, timeOutInMs);
+    }
+
+    /**
+     * Find and mask any pre-configured sensitive data into filter group
+     *
+     * @param content                as sting which need to be masked
+     * @param preProcessingRequired  as boolean whether pre-processing step   required
+     * @param postProcessingRequired as boolean whether post-processing step required
+     * @param timeOutInMs            as time out in mill sec
+     * @return cleaned up string
+     */
+    public static String mask(String content, boolean preProcessingRequired, boolean postProcessingRequired, long timeOutInMs) {
+        return ExecutorUtil.execute(() -> mask(content, preProcessingRequired, postProcessingRequired), timeOutInMs, TimeUnit.MILLISECONDS);
     }
 
     /**

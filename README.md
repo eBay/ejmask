@@ -194,6 +194,6 @@ compile group: 'com.ebay.pmt2.ejmask', name: 'ejmask-bom', version: '1.0.0'
 - [x] eJMask extensions with ready to use common filters.
 - [x] Spring Bean Support.
 - [x] Spring Boot Starter Support.
+- [x] Mask Operation with timeout.
 - [ ] Users will should be able to configure data filters through `ejmas.ymal`.
 - [ ] Users will be able to mask any given field by annotating with `@Filter` annotation.
-- [ ] Mask Operation with timeout.
