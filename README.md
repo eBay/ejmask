@@ -1,4 +1,4 @@
-# eJMask `{*!*}`
+# eJMask `{*:*}`
 
 eJMask library provides a simple interface to make masking sensitive data sets before logging easier and simpler without impacting performance.
 
@@ -26,13 +26,27 @@ public class EJMaskExample {
 
 ## Components
 
-### IFilter
-
-`IFilter` defines how a field should be masked. This includes the field name, the pattern builder need to be used, number of characters need to be visible at the end or beginning, etc.
-
 ### IPatternBuilder
 
-`IPatternBuilder` implementations are responsible to generate the regular expression needed to replace data to be masked.
+`IPatternBuilder` implementations are responsible to generate the regular expression needed to replace data to be masked. Pattern builder also have additional responsibility to optimize the regex by creating one expression to mask all list of field names for better performance.
+
+#### eg: 
+```java
+public class JsonPatternBuilder implements IPatternBuilder {
+
+    @Override
+    public String buildPattern(int visibleCharacters, String... fieldName) {
+        String fieldNames = Arrays.stream(fieldName).collect(Collectors.joining("|"));
+        return String.format("\\\"(%s)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,%d})[^\\\"]*(\\\\?\\\"|)", fieldNames, visibleCharacters);
+    }
+
+    @Override
+    public String buildReplacement(int visibleCharacters, String... fieldNames) {
+        return "\"$1$2$3-xxxx$4";
+    }
+}
+``` 
+#### Extensions
 For many standard use cases you can make use of patten builders defined in `ejmask-extensions` module.
 
 - HeaderFieldPatternBuilder
@@ -41,14 +55,43 @@ For many standard use cases you can make use of patten builders defined in `ejma
 - JsonFieldPatternBuilder
 - JsonRelativeFieldPatternBuilder
 
+### IFilter
+
+`IFilter` defines how a field should be masked. This includes the field name, the pattern builder need to be used, number of characters need to be visible at the end or beginning, etc.
+
+eg:
+```java
+
+public class Sample implements IFilter {
+
+    @Override
+    public Class<? extends IPatternBuilder> getPatternBuilder() {
+        return JsonPatternBuilder.class;
+    }
+
+    @Override
+    public String[] getFieldNames() {
+        return new String[]{"user_name", "first_name", "last_name", "address_1"};
+    }
+}
+```
+> Users can also override default values for `VisibleCharacters`,`Group`, `Order)` etc if needed.
+
 ### ContentProcessor
 
 `ContentProcessor`(s) configured with the data masker will be invoked to process the data before and after actual masking operations getting invoked.
 A few usecase we can use is to decode and encode the sting before masking or to reduce the size of a large string before performing the masking operation to improve performance.
 
+#### Extensions
+- ContentSlicerPreProcessor
+
 ### LogProvider
 
 In case if you need to override the default logging library with the one you choose, just implement `ILogProvider`.
+
+```java
+LoggerUtil.register(new MyLogProvider());
+```
 
 ## Getting Started
 
@@ -62,7 +105,7 @@ eJMask will internally dedupe the given set of filters and generate the most opt
 
 #### Adding Filters
 
-Invoke `EJMaskInitializer.addFilters` with list of all Filter instances.
+Invoke `EJMaskInitializer.addFilters` with list of all Filter instances. `EJMaskInitializer` Internally removes all duplicate and optimizes the MaskingPatterns by grouping similar patterns. 
 
 #### Adding ContentProcessors
 
@@ -195,5 +238,15 @@ compile group: 'com.ebay.pmt2.ejmask', name: 'ejmask-bom', version: '1.0.0'
 - [x] Spring Bean Support.
 - [x] Spring Boot Starter Support.
 - [x] Mask Operation with timeout.
-- [ ] Users will should be able to configure data filters through `ejmas.ymal`.
-- [ ] Users will be able to mask any given field by annotating with `@Filter` annotation.
+- [ ] Users will should be able to configure data filters through `ejmask.ymal`.
+- [ ] Users will be able to mask any given field by annotating with `@Mask` annotation.
+
+
+## License Information
+Copyright 2023 eBay Inc.
+
+Author(s): [Prasanth Kaimattil Venu](https://github.com/prasanthkv), [Manikandan Perumal](https://github.com/tbd)
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
