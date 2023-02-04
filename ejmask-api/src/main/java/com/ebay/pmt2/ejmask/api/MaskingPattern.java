@@ -16,6 +16,7 @@ package com.ebay.pmt2.ejmask.api;
  * limitations under the License.
  */
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -67,7 +68,36 @@ public class MaskingPattern implements Comparable<MaskingPattern> {
             //one with more filters can go to the top
             return (that.pattern.pattern().length() > this.pattern.pattern().length()) ? -1 : 1;
         }
-        return (that.order > this.order) ? -1 : 1;
+        return that.order > this.order ? -1 : 1;
+    }
+
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     *
+     * @param obj the reference object with which to compare.
+     * @return {@code true} if this object is the same as the obj
+     * argument; {@code false} otherwise.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof MaskingPattern)) {
+            return false;
+        }
+        MaskingPattern that = (MaskingPattern) obj;
+        return this.order == that.order
+                && Objects.equals(this.replacement, that.replacement)
+                && Objects.equals(this.pattern, that.pattern);
+    }
+
+    /**
+     * Returns the hash code of the given instance
+     *
+     * @return the hash code of this object.
+     * @see Object#hashCode
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this);
     }
 
     /**
