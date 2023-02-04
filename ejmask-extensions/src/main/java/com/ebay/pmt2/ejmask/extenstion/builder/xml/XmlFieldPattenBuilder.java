@@ -19,7 +19,9 @@ package com.ebay.pmt2.ejmask.extenstion.builder.xml;
 import com.ebay.pmt2.ejmask.extenstion.builder.AbstractRegexPatternBuilder;
 
 /**
- * <content>JVBERi0xLjQKJdPr6eEKMSAwIG9iago8PC9DcmVhdG9yIChNb3ppbGxhLzUuMCBcKE1hY2ludG9zaDsgSW50ZWwgTWF...</content>
+ * XML Field Patten Builder
+ *
+ * @author prakv
  */
 public class XmlFieldPattenBuilder extends AbstractRegexPatternBuilder {
 
