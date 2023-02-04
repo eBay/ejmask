@@ -33,7 +33,6 @@ import javax.inject.Named;
  * Component scan configuration for ejmask auto configuration
  *
  * @author prakv
- * @link https://docs.spring.io/spring-javaconfig/docs/1.0.0.M4/reference/html/ch06s02.html
  */
 @AutoConfigureOrder(105)
 @Named("ejmask.autoconfig")

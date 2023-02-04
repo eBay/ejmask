@@ -47,7 +47,7 @@ public class ExecutorUtil {
      * @param task    as instance of
      * @param timeout as timeout
      * @param unit    as time unit
-     * @param <R>
+     * @param <R>     as Execution results.
      * @return response of type R, if there is a timeout return null
      */
     @Nullable
