@@ -118,6 +118,7 @@ public class BaseFilter implements IFilter {
      * @return the value of fieldNames
      */
     @Override
+    @SuppressWarnings("EI_EXPOSE_REP")
     public String[] getFieldNames() {
         return this.fieldNames;
     }
