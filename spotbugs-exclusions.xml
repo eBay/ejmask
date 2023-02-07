@@ -3,7 +3,7 @@
                 xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
     <And>
         <Bug pattern="EI_EXPOSE_REP"/>
-        <Class name="com.ebay.pmt2.ejmask.core.BaseFilter"/>
+        <Class name="com.ebay.ejmask.core.BaseFilter"/>
     </And>
 
     <!-- All bugs in test classes, except for JUnit-specific bugs -->

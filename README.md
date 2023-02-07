@@ -179,15 +179,15 @@ Fist add `ejmask-spring-core` to your dependency list.
 
 ```xml
 <dependency>
-    <groupId>com.ebay.pmt2.ejmask</groupId>
-    <artifactId>ejmask-spring-autoconfig</artifactId>
+  <groupId>com.ebay.ejmask</groupId>
+  <artifactId>ejmask-spring-autoconfig</artifactId>
 </dependency>
 ```
 
-then simply add `com.ebay.pmt2.ejmask.spring.core` to your spring context scanning.
+then simply add `com.ebay.ejmask.spring.core` to your spring context scanning.
 
 ```xml
-<context:component-scan base-package="com.ebay.pmt2.ejmask.spring.core"/>
+<context:component-scan base-package="com.ebay.ejmask.spring.core"/>
 ```
 
 #### AutoConfiguration
@@ -196,8 +196,8 @@ If your application is built on spring boot you can skip the above step by simpl
 
 ```xml
 <dependency>
-    <groupId>com.ebay.pmt2.ejmask</groupId>
-    <artifactId>ejmask-spring-boot</artifactId>
+  <groupId>com.ebay.ejmask</groupId>
+  <artifactId>ejmask-spring-boot</artifactId>
 </dependency>
 ```
 
@@ -220,16 +220,16 @@ Alternatively you can pull it from the central Maven repositories:
 
 ```xml
 <dependency>
-    <groupId>com.ebay.pmt2.ejmask</groupId>
-    <artifactId>ejmask-bom</artifactId>
-    <version>1.0.0</version>
+  <groupId>com.ebay.ejmask</groupId>
+  <artifactId>ejmask-bom</artifactId>
+  <version>1.0.0</version>
 </dependency>
 ```
 
 ### Using in your Gradle Project.
 
 ```groovy
-compile group: 'com.ebay.pmt2.ejmask', name: 'ejmask-bom', version: '1.0.0'
+compile group: 'com.ebay.ejmask', name: 'ejmask-bom', version: '1.0.0'
 ```
 
 ## Roadmap
