@@ -13,6 +13,7 @@
         eJMask is a JVM-based masking library that provides an easy-to-use API for masking sensitive data in your Java applications.
         With eJMask, you can quickly mask sensitive information like personal information, credit card numbers, and more.
     </description>
+    <url>https://github.com/eBay/ejmask</url>
 
     <modules>
         <module>ejmask-api</module>
