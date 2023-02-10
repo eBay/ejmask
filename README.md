@@ -1,11 +1,24 @@
 # eJMask `{*:*}`
 
-eJMask library provides a simple interface to make masking sensitive data sets before logging easier and simpler without impacting performance.
+eJMask is a JVM-based masking library that provides an easy-to-use API for masking sensitive data in your Java applications. With eJMask, you can quickly mask sensitive information like personal information, credit card numbers, and more. eJMask library is designed to provide a simple interface to make masking sensitive data sets before logging easier and simpler without impacting performance.
+
+### Features
+- Easy-to-use API for integration into your Java applications
+- Support for multiple masking strategies, including character substitution and partial masking
+- Custom masking strategies can be added easily to meet your specific needs
+- Lightweight and efficient, with no external dependencies
+
+### Getting Started
+
+To get started with eJMask, you'll need to add the eJMask library to your project using your preferred build system, such as Maven or Gradle.
+
+Here's an example of how to use eJMask in your code:
 
 ```java
 public class EJMaskExample {
 
     static {
+        // configure masking rules. 
         EJMaskInitializer.addFilter(
                 new BaseFilter(JsonFieldPatternBuilder.class, 4, "user_name", "first_name"),
                 new BaseFilter(JsonFullValuePatternBuilder.class, 0, "password")
@@ -14,15 +27,13 @@ public class EJMaskExample {
 
     public static void main(String[] args) {
         String input = "{\"user_name\":\"prasanth\",\"password\":\"masking@ejmask\"}";
-        //mask
+        // mask a sensitive piece of data
         String output = EJMask.mask(input);
-        //print output
+        //Output {"user_name":"pras-xxxx","password":"****"}
         System.err.println("result: " + output);
     }
 }
 ```
-
-> result: {"user_name":"pras-xxxx","password":"****"}
 
 ## Components
 
