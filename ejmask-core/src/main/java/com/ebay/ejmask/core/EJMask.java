@@ -158,7 +158,7 @@ public class EJMask {
             }
             return contentInProgress;
         } catch (Exception ex) {
-            return "masking sensitive content failed due to " + ex.getMessage();
+            return "masking sensitive content failed due to " + CommonUtils.getStackTrace(ex);
         }
     }
 
