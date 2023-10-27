@@ -92,7 +92,11 @@ class EJMaskTest extends EJMaskBaseTest {
         EJMask.addFilter(50, "(auth)=([^\\\"]{1,10})[^&]*", "$1xxxx");
         String content = "{\"firstName\":\"sensitive data\",\"lastName\":\"sensitive data\",\"nonSensitiveData\":\"firstName\"}";
         String result = EJMask.mask(content);
-        Assertions.assertEquals("masking sensitive content failed due to mock exception please ignore", result);
+        Assertions.assertTrue(result.contains("masking sensitive content failed due to java.lang.RuntimeException: mock exception please ignore\n" +
+           "\tat com.ebay.ejmask.api.IContentProcessor.preProcess(IContentProcessor.java:44)\n" +
+           "\tat com.ebay.ejmask.core.EJMask.process(EJMask.java:174)\n" +
+           "\tat com.ebay.ejmask.core.EJMask.mask(EJMask.java:153)\n" +
+           "\tat com.ebay.ejmask.core.EJMask.mask(EJMask.java:100)"));
     }
 
     /**

@@ -56,11 +56,11 @@ public class ExecutorUtil {
         try {
             return future.get(timeout, unit);
         } catch (TimeoutException ex) {
-            LoggerUtil.error("executor-util", "TimeoutException", ex.getMessage());
+            LoggerUtil.error("executor-util", "TimeoutException", CommonUtils.getStackTrace(ex));
         } catch (InterruptedException ex) {
-            LoggerUtil.error("executor-util", "InterruptedException", ex.getMessage());
+            LoggerUtil.error("executor-util", "InterruptedException", CommonUtils.getStackTrace(ex));
         } catch (ExecutionException ex) {
-            LoggerUtil.error("executor-util", "ExecutionException", ex.getMessage());
+            LoggerUtil.error("executor-util", "ExecutionException", CommonUtils.getStackTrace(ex));
         } finally {
             if (!(future.isDone() || future.isCancelled())) {
                 future.cancel(true);

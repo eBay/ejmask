@@ -58,7 +58,7 @@ public class JsonPatternBuilder implements IPatternBuilder {
 }
 ``` 
 #### Extensions
-For many standard use cases you can make use of patten builders defined in `ejmask-extensions` module.
+For many standard use cases you can make use of pattern builders defined in `ejmask-extensions` module.
 
 - HeaderFieldPatternBuilder
 - XmlFieldPattenBuilder
@@ -91,7 +91,7 @@ public class Sample implements IFilter {
 ### ContentProcessor
 
 `ContentProcessor`(s) configured with the data masker will be invoked to process the data before and after actual masking operations getting invoked.
-A few usecase we can use is to decode and encode the sting before masking or to reduce the size of a large string before performing the masking operation to improve performance.
+A few use case we can use is to decode and encode the string before masking and/or to reduce the size of a large string before performing the masking operation to improve performance.
 
 #### Extensions
 - ContentSlicerPreProcessor
