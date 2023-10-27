@@ -71,14 +71,4 @@ class CommonUtilsTest {
         Assertions.assertNotNull(result);
         Assertions.assertEquals("java.lang.Exception: some exception", result.split("\n")[0]);
     }
-
-
-
-
-
-
-
-
-
-
 }
