@@ -109,10 +109,4 @@ public class MaskingPattern implements Comparable<MaskingPattern> {
     public String toString() {
         return "order=" + this.order + ";pattern=" + this.pattern.pattern() + ";replacement=" + this.replacement;
     }
-
-    public int getOrder() { return order; }
-
-    public Pattern getPattern() { return pattern; }
-
-    public String getReplacement() { return replacement; }
 }
