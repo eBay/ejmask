@@ -233,14 +233,14 @@ Alternatively you can pull it from the central Maven repositories:
 <dependency>
   <groupId>com.ebay.ejmask</groupId>
   <artifactId>ejmask-bom</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
 ### Using in your Gradle Project.
 
 ```groovy
-compile group: 'com.ebay.ejmask', name: 'ejmask-bom', version: '1.0.0'
+compile group: 'com.ebay.ejmask', name: 'ejmask-bom', version: '1.0.1'
 ```
 
 ## Roadmap
