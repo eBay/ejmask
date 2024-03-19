@@ -12,7 +12,7 @@ eJMask is a JVM-based masking library that provides an easy-to-use API for maski
 
 To get started with eJMask, you'll need to add the eJMask library to your project using your preferred build system, such as Maven or Gradle.
 
-Here's an example of how to use eJMask in your code:
+Here's an example of how to use eJMask in your code: 
 
 ```java
 public class EJMaskExample {
