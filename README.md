@@ -96,7 +96,7 @@ A few use case we can use is to decode and encode the string before masking and/
 #### Extensions
 - ContentSlicerPreProcessor
 
-### LogProvider
+### LogProvider 
 
 In case if you need to override the default logging library with the one you choose, just implement `ILogProvider`.
 
