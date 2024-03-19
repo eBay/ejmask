@@ -40,11 +40,11 @@ import javax.inject.Named;
 @ConditionalOnProperty(prefix = "ejmask.", name = "autoconfig", havingValue = "enabled", matchIfMissing = true)
 public class EJMaskAutoConfig {
 
-    @Value("ejmask.processor.content-slicer.priority:50")
+    @Value("${ejmask.processor.content-slicer.priority:50}")
     int contentSlicerPriority;
-    @Value("ejmask.processor.content-slicer.max-size:10000")
+    @Value("${ejmask.processor.content-slicer.max-size:10000}")
     int contentSlicerMaxStringLimit;
-    @Value("ejmask.processor.content-slicer.new-size:4000")
+    @Value("${ejmask.processor.content-slicer.new-size:4000}")
     int contentSlicerNewSize;
 
 
