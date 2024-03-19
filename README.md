@@ -101,7 +101,7 @@ A few use case we can use is to decode and encode the string before masking and/
 In case if you need to override the default logging library with the one you choose, just implement `ILogProvider`.
 
 ```java
-LoggerUtil.register(new MyLogProvider());
+LoggerUtil.register(new MyLogProvider()); 
 ```
 
 ## Getting Started
