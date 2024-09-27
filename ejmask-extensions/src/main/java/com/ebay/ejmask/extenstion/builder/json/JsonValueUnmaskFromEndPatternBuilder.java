@@ -6,7 +6,7 @@ import com.ebay.ejmask.extenstion.builder.AbstractRegexPatternBuilder;
  * An implementation of IPatternBuilder to support high sensitive JSON field, whose value
  * need to be partially masked with relative field from end of the field.
  *
- * @author ganwu
+ * @author parasdharwal33
  */
 public class JsonValueUnmaskFromEndPatternBuilder extends AbstractRegexPatternBuilder {
 
