@@ -233,7 +233,7 @@ Alternatively you can pull it from the central Maven repositories:
 <dependency>
   <groupId>com.ebay.ejmask</groupId>
   <artifactId>ejmask-bom</artifactId>
-  <version>1.0.3</version>
+  <version>1.1.0-SNAPSHOT</version>
 </dependency>
 ```
 
