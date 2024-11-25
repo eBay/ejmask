@@ -20,6 +20,7 @@ import com.ebay.ejmask.api.IContentProcessor;
 import com.ebay.ejmask.api.IFilter;
 import com.ebay.ejmask.api.IPatternBuilder;
 import com.ebay.ejmask.api.MaskingPattern;
+import com.ebay.ejmask.api.PatternEntity;
 import com.ebay.ejmask.core.util.CommonUtils;
 import com.ebay.ejmask.core.util.LoggerUtil;
 
@@ -32,6 +33,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import static com.ebay.ejmask.core.util.CommonUtils.emptyIfNull;
 
 /**
  * The objective of this class it to wrap all complications in adding and
@@ -104,7 +107,7 @@ public class EJMaskInitializer {
      * @param contentProcessors new value of contentProcessors
      */
     public static synchronized void addContentProcessors(Collection<IContentProcessor> contentProcessors) {
-        for (IContentProcessor contentPreProcessor : CommonUtils.emptyIfNull(contentProcessors)) {
+        for (IContentProcessor contentPreProcessor : emptyIfNull(contentProcessors)) {
             EJMask.register(contentPreProcessor);
             LoggerUtil.info("data-filter-initializer", "processors", "adding " + contentPreProcessor.getName());
         }
@@ -137,10 +140,11 @@ public class EJMaskInitializer {
             //avoid empty due to duplicate
             if (CommonUtils.isNotEmpty(filter.getFieldNames())) {
                 final String[] fieldNames = toArray(filter.getFieldNames());
-                final String pattern = filter.getBuilder().buildPattern(filter.getVisibleCharacters(), fieldNames);
-                final String replacement = filter.getBuilder().buildReplacement(filter.getVisibleCharacters(), fieldNames);
-                //add masking pattern to data masking utility
-                addMaskingPattern(filter.getOrder(), pattern, replacement);
+                List<PatternEntity>  patternEntityList = filter.getBuilder().buildPatternEntities(filter.getVisibleCharacters(), fieldNames);
+                emptyIfNull(patternEntityList).forEach(patternEntity -> {
+                    //add masking pattern to data masking utility
+                    addMaskingPattern(filter.getOrder(), patternEntity.getPatternTemplate(), patternEntity.getReplacementTemplate());
+                });
             }
         }
         addNonGroupedFilters(filters);

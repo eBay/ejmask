@@ -1,5 +1,8 @@
 package com.ebay.ejmask.api;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Copyright (c) 2023 eBay Inc.
  * <p>
@@ -36,6 +39,15 @@ public interface IPatternBuilder {
      */
     String buildReplacement(int visibleCharacters, String... fieldNames);
 
+    /**
+     * Build pattern to match
+     * @param visibleCharacters as no of characters to be visible.
+     * @param fieldNames       as list of field names
+     * @return list of pattern entities
+     */
+    default List<PatternEntity> buildPatternEntities(int visibleCharacters, String... fieldNames) {
+        return Arrays.asList(new PatternEntity(buildPattern(visibleCharacters, fieldNames), buildReplacement(visibleCharacters, fieldNames)));
+    }
     /**
      * Set true if the build can be groupable.
      *
