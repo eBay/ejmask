@@ -1,6 +1,6 @@
 package com.ebay.ejmask.extenstion.builder.json;
 /**
- * Copyright (c) 2023 eBay Inc.
+ * Copyright (c) 2024 eBay Inc.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,18 +24,18 @@ import java.util.List;
 
 /**
  * An implementation of IPatternBuilder to support sensitive JSON field, whose value need to be partially masked.
- * This builder is for masking the field value with a String type.
+ * This builder is for masking the field value with a Numeric type.
  *
- * @author prakv
+ * @author fsun1
  */
-public class JsonFieldPatternBuilder extends AbstractRegexPatternBuilder {
+public class JsonNumericFieldPatternBuilder extends AbstractRegexPatternBuilder {
 
     private static final List<PatternEntity> PATTERN_ENTITY_LIST = Arrays.asList(
             /**
-             * String field with value to be masked
-             * @see <a href="https://regex101.com/r/ZDQWod/5">Regular Expresseion For Testing</a>
+             * Numeric field with value to be masked
+             * @see <a href="https://regex101.com/r/rOeErB/1">Regular Expresseion For Testing</a>
              */
-            new PatternEntity("\\\"(%s)(\\\\*\\\"\\s*:\\s*\\\\*\\\")([^\\\"]{1,%d})[^\\\"]*(\\\\?\\\"|)", "\"$1$2$3-xxxx$4")
+            new PatternEntity("\\\"(%s)(\\\\*\\\"\\s*:\\s*\\\\*)(-?\\b\\d+(\\.\\d+)?(e-?\\d+)?\\b)([^\\\"]{1,2})", "\"$1$2\"xxxx\"$6")
     );
 
     /**
