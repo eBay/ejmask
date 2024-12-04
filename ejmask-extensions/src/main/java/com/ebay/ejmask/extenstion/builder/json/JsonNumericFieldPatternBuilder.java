@@ -15,12 +15,7 @@ package com.ebay.ejmask.extenstion.builder.json;
  * limitations under the License.
  */
 
-import com.ebay.ejmask.api.PatternEntity;
 import com.ebay.ejmask.extenstion.builder.AbstractRegexPatternBuilder;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * An implementation of IPatternBuilder to support sensitive JSON field, whose value need to be partially masked.
@@ -30,13 +25,14 @@ import java.util.List;
  */
 public class JsonNumericFieldPatternBuilder extends AbstractRegexPatternBuilder {
 
-    private static final List<PatternEntity> PATTERN_ENTITY_LIST = Arrays.asList(
-            /**
-             * Numeric field with value to be masked
-             * @see <a href="https://regex101.com/r/rOeErB/1">Regular Expresseion For Testing</a>
-             */
-            new PatternEntity("\\\"(%s)(\\\\*\\\"\\s*:\\s*\\\\*)(-?\\b\\d+(\\.\\d+)?(e-?\\d+)?\\b)([^\\\"]{1,2})", "\"$1$2\"xxxx\"$6")
-    );
+    /**
+     * Numeric field with value to be masked
+     *
+     * @see <a href="https://regex101.com/r/rOeErB/1">Regular Expresseion For Testing</a>
+     */
+    private static final String PATTERN_TEMPLATE = "\\\"(%s)(\\\\*\\\"\\s*:\\s*\\\\*)(-?\\b\\d+(\\.\\d+)?(e-?\\d+)?\\b)([^\\\"]{1,2})";
+
+    private static final String REPLACEMENT_TEMPLATE = "\"$1$2\"xxxx\"$6";
 
     /**
      * Build pattern to match
@@ -47,27 +43,11 @@ public class JsonNumericFieldPatternBuilder extends AbstractRegexPatternBuilder 
      */
     @Override
     public String buildPattern(int visibleCharacters, String... fieldNames) {
-        return this.buildPattern(null, visibleCharacters, fieldNames);
-    }
-
-    /**
-     * Build pattern to match
-     *
-     * @param patternEntity     as instance of PatternEntity
-     * @param visibleCharacters as no of characters to be visible.
-     * @param fieldNames        as list of field names
-     * @return
-     */
-    private String buildPattern(PatternEntity patternEntity, int visibleCharacters, String... fieldNames) {
-        if (visibleCharacters < 1) {
-            throw new IllegalArgumentException("visibleCharacters must be a possessive value instead of " + visibleCharacters);
+        if (visibleCharacters != 0) {
+            throw new IllegalArgumentException("visibleCharacters must be a value greater than zero instead of " + visibleCharacters);
         }
-        if (patternEntity == null) {
-            patternEntity = PATTERN_ENTITY_LIST.get(0);
-        }
-        return String.format(patternEntity.getPatternTemplate(), super.buildFieldNamesForRegexOr(fieldNames), visibleCharacters);
+        return String.format(PATTERN_TEMPLATE, super.buildFieldNamesForRegexOr(fieldNames));
     }
-
 
     /**
      * Build pattern to replace.
@@ -78,38 +58,6 @@ public class JsonNumericFieldPatternBuilder extends AbstractRegexPatternBuilder 
      */
     @Override
     public String buildReplacement(int visibleCharacters, String... fieldNames) {
-        return this.buildReplacement(null, visibleCharacters, fieldNames);
+        return REPLACEMENT_TEMPLATE;
     }
-
-    /**
-     * Build pattern to replace.
-     *
-     * @param patternEntity     as instance of PatternEntity
-     * @param visibleCharacters as no of characters to be visible.
-     * @param fieldNames        as list of field names
-     * @return match pattern
-     */
-    private String buildReplacement(PatternEntity patternEntity, int visibleCharacters, String... fieldNames) {
-        if (patternEntity == null) {
-            patternEntity = PATTERN_ENTITY_LIST.get(0);
-        }
-        return patternEntity.getReplacementTemplate();
-    }
-
-    /**
-     * Build list of PatternEntity
-     *
-     * @param visibleCharacters as no of characters to be visible.
-     * @param fieldNames        as list of field names
-     * @return match pattern list
-     */
-    @Override
-    public List<PatternEntity> buildPatternEntities(int visibleCharacters, String... fieldNames) {
-        List<PatternEntity> result = new LinkedList<>();
-        PATTERN_ENTITY_LIST.forEach(patternEntity -> {
-            result.add(new PatternEntity(this.buildPattern(patternEntity, visibleCharacters, fieldNames), this.buildReplacement(patternEntity, visibleCharacters, fieldNames)));
-        });
-        return result;
-    }
-
 }

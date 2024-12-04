@@ -135,23 +135,26 @@ public class EJMaskInitializer {
             return;
         }
         List<Filter> filterGroups = removeDuplicatesAndBuildFilterGroups(filters);
-        //time to update filter pattern
-        for (Filter filter : filterGroups) {
-            //avoid empty due to duplicate
-            if (CommonUtils.isNotEmpty(filter.getFieldNames())) {
-                final String[] fieldNames = toArray(filter.getFieldNames());
-                List<PatternEntity>  patternEntityList = filter.getBuilder().buildPatternEntities(filter.getVisibleCharacters(), fieldNames);
-                emptyIfNull(patternEntityList).forEach(patternEntity -> {
-                    //add masking pattern to data masking utility
-                    addMaskingPattern(filter.getOrder(), patternEntity.getPatternTemplate(), patternEntity.getReplacementTemplate());
-                });
-            }
-        }
+        filterGroups.stream()
+                .filter(filter -> CommonUtils.isNotEmpty(filter.getFieldNames())).forEach(EJMaskInitializer::addGroupedFilter);
         addNonGroupedFilters(filters);
         //sort for order
         for (MaskingPattern filterPattern : EJMask.getMaskingPatterns()) {
             LoggerUtil.info("data-filter-initializer", "filter-pattern", filterPattern.toString());
         }
+    }
+
+    /**
+     * Add grouped filter
+     *
+     * @param filter as Filter
+     */
+    private static void addGroupedFilter(Filter filter) {
+        String[] fieldNames = toArray(filter.getFieldNames());
+        Collection<PatternEntity> patternEntityList = filter.getBuilder().buildPatternEntities(filter.getVisibleCharacters(), fieldNames);
+        //add masking pattern to data masking utility
+        emptyIfNull(patternEntityList)
+                .forEach(patternEntity -> addMaskingPattern(filter.getOrder(), patternEntity.getPatternTemplate(), patternEntity.getReplacementTemplate()));
     }
 
     /**
@@ -179,10 +182,10 @@ public class EJMaskInitializer {
      */
     private static void addNonGroupedFilters(Collection<IFilter> filters) {
         for (IFilter ifilter : filters) {
-            final IPatternBuilder builder = getBuilder(ifilter.getPatternBuilder());
+            IPatternBuilder builder = getBuilder(ifilter.getPatternBuilder());
             if (!builder.isGroupable()) {
-                final String pattern = builder.buildPattern(ifilter.getVisibleCharacters(), ifilter.getFieldNames());
-                final String replacement = builder.buildReplacement(ifilter.getVisibleCharacters(), ifilter.getFieldNames());
+                String pattern = builder.buildPattern(ifilter.getVisibleCharacters(), ifilter.getFieldNames());
+                String replacement = builder.buildReplacement(ifilter.getVisibleCharacters(), ifilter.getFieldNames());
                 EJMask.addFilter(ifilter.getOrder(), pattern, replacement);
             }
         }
@@ -245,7 +248,7 @@ public class EJMaskInitializer {
      * @return list of Filter
      */
     private static List<Filter> groupByOrderAndVisibleCharacters(Class<? extends IPatternBuilder> builderClass, Map<String, IFilter> fieldNameToFilterMapping) {
-        final IPatternBuilder builder = getBuilder(builderClass);
+        IPatternBuilder builder = getBuilder(builderClass);
         if (!builder.isGroupable()) {
             return Collections.emptyList();
         }

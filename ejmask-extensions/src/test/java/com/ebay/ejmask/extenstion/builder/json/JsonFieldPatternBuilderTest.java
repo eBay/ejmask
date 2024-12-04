@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -63,7 +63,7 @@ public class JsonFieldPatternBuilderTest {
     @ParameterizedTest
     @MethodSource("dataForTestMatch")
     public void testMatchForPatternList(String name, String data, String expected) {
-        List<PatternEntity> patternEntityList = instance.buildPatternEntities(2, fieldNames);
+        Collection<PatternEntity> patternEntityList = instance.buildPatternEntities(2, fieldNames);
         String result = data;
         for (PatternEntity patternEntity : patternEntityList) {
             Pattern pattern = Pattern.compile(patternEntity.getPatternTemplate());

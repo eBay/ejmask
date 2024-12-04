@@ -20,7 +20,6 @@ import javax.annotation.Nonnull;
 public class PatternEntity {
 
     private final String patternTemplate;
-
     private final String replacementTemplate;
 
     /**

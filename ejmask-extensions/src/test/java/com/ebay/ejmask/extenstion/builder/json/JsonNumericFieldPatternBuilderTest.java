@@ -6,8 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -25,7 +26,7 @@ public class JsonNumericFieldPatternBuilderTest {
      */
     @Test
     public void testBuildPattern() {
-        int visibleCharacters = 12;
+        int visibleCharacters = 0;
         String result = instance.buildPattern(visibleCharacters, fieldNames);
         Assertions.assertEquals("\\\"(firstName|lastName|number|boolValue)(\\\\*\\\"\\s*:\\s*\\\\*)(-?\\b\\d+(\\.\\d+)?(e-?\\d+)?\\b)([^\\\"]{1,2})", result);
     }
@@ -33,9 +34,9 @@ public class JsonNumericFieldPatternBuilderTest {
     /**
      * Test of buildPattern method, of class JsonFieldPatternBuilder.
      */
-    @Test
-    public void testBuildPattern_without_visible_characters() {
-        int visibleCharacters = 0;
+    @ParameterizedTest
+    @ValueSource(ints = {-1, -10})
+    public void testBuildPattern_without_visible_characters(int visibleCharacters) {
         Assertions.assertThrows(IllegalArgumentException.class, () -> instance.buildPattern(visibleCharacters, fieldNames));
     }
 
@@ -52,8 +53,8 @@ public class JsonNumericFieldPatternBuilderTest {
     @ParameterizedTest
     @MethodSource("dataForTestMatch")
     public void testMatch(String name, String data, String expected) {
-        String regex = instance.buildPattern(2, fieldNames);
-        String replacement = instance.buildReplacement(2, fieldNames);
+        String regex = instance.buildPattern(0, fieldNames);
+        String replacement = instance.buildReplacement(0, fieldNames);
         Pattern pattern = Pattern.compile(regex);
         String result = pattern.matcher(data).replaceAll(replacement);
         Assertions.assertEquals(expected, result);
@@ -62,7 +63,7 @@ public class JsonNumericFieldPatternBuilderTest {
     @ParameterizedTest
     @MethodSource("dataForTestMatch")
     public void testMatchForPatternList(String name, String data, String expected) {
-        List<PatternEntity> patternEntityList = instance.buildPatternEntities(2, fieldNames);
+        Collection<PatternEntity> patternEntityList = instance.buildPatternEntities(0, fieldNames);
         String result = data;
         for (PatternEntity patternEntity : patternEntityList) {
             Pattern pattern = Pattern.compile(patternEntity.getPatternTemplate());

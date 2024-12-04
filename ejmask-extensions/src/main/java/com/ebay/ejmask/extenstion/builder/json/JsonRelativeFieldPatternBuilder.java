@@ -53,7 +53,7 @@ public class JsonRelativeFieldPatternBuilder implements IPatternBuilder {
     @Override
     public String buildPattern(int visibleCharacters, String... fieldNames) {
         if (visibleCharacters < 1) {
-            throw new IllegalArgumentException("visibleCharacters must be a possessive value instead of " + visibleCharacters);
+            throw new IllegalArgumentException("visibleCharacters must be a value greater than zero instead of " + visibleCharacters);
         }
         return this.buildRegex(visibleCharacters, fieldNames);
     }
