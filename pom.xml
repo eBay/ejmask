@@ -4,7 +4,7 @@
 
     <groupId>com.ebay.ejmask</groupId>
     <artifactId>ejmask-parent</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>${revision}${changelist}</version>
 
     <packaging>pom</packaging>
 
@@ -24,6 +24,8 @@
     </modules>
 
     <properties>
+        <revision>1.2.0</revision>
+        <changelist>-SNAPSHOT</changelist>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
