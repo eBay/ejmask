@@ -228,19 +228,19 @@ You can download source and binaries from our [release page](https://github.com/
 Alternatively you can pull it from the central Maven repositories:
 
 ### Using in your maven project.
-
+> Please check the release version before adding to your project.
 ```xml
 <dependency>
   <groupId>com.ebay.ejmask</groupId>
   <artifactId>ejmask-bom</artifactId>
-  <version>1.1.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
 ### Using in your Gradle Project.
 
 ```groovy
-compile group: 'com.ebay.ejmask', name: 'ejmask-bom', version: '1.1.0'
+compile group: 'com.ebay.ejmask', name: 'ejmask-bom', version: '2.0.0'
 ```
 
 ## Roadmap
