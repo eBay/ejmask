@@ -1,7 +1,7 @@
 package com.ebay.ejmask.api;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Copyright (c) 2023 eBay Inc.
@@ -20,6 +20,15 @@ import java.util.List;
  */
 
 public interface IPatternBuilder {
+
+    /**
+     * Set true if the build can be groupable.
+     *
+     * @return true if groupable
+     */
+    default boolean isGroupable() {
+        return true;
+    }
 
     /**
      * Build pattern to match
@@ -41,19 +50,12 @@ public interface IPatternBuilder {
 
     /**
      * Build pattern to match
+     *
      * @param visibleCharacters as no of characters to be visible.
-     * @param fieldNames       as list of field names
+     * @param fieldNames        as list of field names
      * @return list of pattern entities
      */
-    default List<PatternEntity> buildPatternEntities(int visibleCharacters, String... fieldNames) {
-        return Arrays.asList(new PatternEntity(buildPattern(visibleCharacters, fieldNames), buildReplacement(visibleCharacters, fieldNames)));
-    }
-    /**
-     * Set true if the build can be groupable.
-     *
-     * @return true if groupable
-     */
-    default boolean isGroupable() {
-        return true;
+    default Collection<PatternEntity> buildPatternEntities(int visibleCharacters, String... fieldNames) {
+        return Collections.singletonList(new PatternEntity(this.buildPattern(visibleCharacters, fieldNames), this.buildReplacement(visibleCharacters, fieldNames)));
     }
 }

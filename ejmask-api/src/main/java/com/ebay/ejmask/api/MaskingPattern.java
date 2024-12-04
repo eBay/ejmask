@@ -44,6 +44,27 @@ public class MaskingPattern implements Comparable<MaskingPattern> {
     }
 
     /**
+     * Get the value of order
+     *
+     * @return the value of order
+     */
+    public int getOrder() { return order; }
+
+    /**
+     * Get the value of pattern
+     *
+     * @return the value of pattern
+     */
+    public Pattern getPattern() { return pattern; }
+
+    /**
+     * Get the value of replacement
+     *
+     * @return the value of replacement
+     */
+    public String getReplacement() { return replacement; }
+
+    /**
      * Replace sensitive data with mask
      *
      * @param data as string with sensitive data
@@ -72,6 +93,17 @@ public class MaskingPattern implements Comparable<MaskingPattern> {
     }
 
     /**
+     * Returns the hash code of the given instance
+     *
+     * @return the hash code of this object.
+     * @see Object#hashCode
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this);
+    }
+
+    /**
      * Indicates whether some other object is "equal to" this one.
      *
      * @param obj the reference object with which to compare.
@@ -90,17 +122,6 @@ public class MaskingPattern implements Comparable<MaskingPattern> {
     }
 
     /**
-     * Returns the hash code of the given instance
-     *
-     * @return the hash code of this object.
-     * @see Object#hashCode
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(this);
-    }
-
-    /**
      * Returns the string representation of this pattern.
      *
      * @return The string representation of this pattern
@@ -109,25 +130,4 @@ public class MaskingPattern implements Comparable<MaskingPattern> {
     public String toString() {
         return "order=" + this.order + ";pattern=" + this.pattern.pattern() + ";replacement=" + this.replacement;
     }
-
-    /**
-     * Get the value of order
-     *
-     * @return the value of order
-     */
-    public int getOrder() { return order; }
-
-    /**
-     * Get the value of pattern
-     *
-     * @return the value of pattern
-     */
-    public Pattern getPattern() { return pattern; }
-
-    /**
-     * Get the value of replacement
-     *
-     * @return the value of replacement
-     */
-    public String getReplacement() { return replacement; }
 }

@@ -96,7 +96,7 @@ public class EJMask {
      * @param content as sting which need to be masked
      * @return cleaned up string
      */
-    public static String mask(final String content) {
+    public static String mask(String content) {
         return mask(content, true, true);
     }
 
@@ -130,7 +130,7 @@ public class EJMask {
      * @param content as sting which need to be masked
      * @return cleaned up string
      */
-    public static String maskWithOutProcessor(final String content) {
+    public static String maskWithOutProcessor(String content) {
         return mask(content, false, false);
     }
 
@@ -142,7 +142,7 @@ public class EJMask {
      * @param postProcessingRequired as boolean whether post-processing step required
      * @return cleaned up string
      */
-    public static String mask(final String content, boolean preProcessingRequired, boolean postProcessingRequired) {
+    public static String mask(String content, boolean preProcessingRequired, boolean postProcessingRequired) {
         try {
             //filterPattern on original content
             if (CommonUtils.isBlank(content)) {
@@ -171,7 +171,7 @@ public class EJMask {
      */
     private static String process(String content, Operation operation) {
         for (IContentProcessor processor : PROCESSORS) {
-            final ProcessorResult result = operation.process(processor, content);
+            ProcessorResult result = operation.process(processor, content);
             if (result != null) {
                 if (CommonUtils.isNotBlank(result.getContent())) {
                     content = result.getContent();
@@ -203,6 +203,13 @@ public class EJMask {
      */
     @FunctionalInterface
     interface Operation {
+        /**
+         * Process the given content.
+         *
+         * @param processor the processor
+         * @param content   the content
+         * @return the result
+         */
         ProcessorResult process(IContentProcessor processor, String content);
     }
 }
