@@ -1,78 +1,158 @@
-##
-## This script is used to update pom version
-##
-import re
-import subprocess
+import xml.etree.ElementTree as ET
 import sys
-from xml.etree import ElementTree as ET
+import xml.dom.minidom as minidom
+import re
 
+pom_file = 'pom.xml'
 
-## get root pom version
-def get_root_pom_version():
-    tree = ET.parse('./pom.xml')
+"""
+This script updates the version information in a Maven POM file.
+
+Usage:
+    python version_update.py <version_type>
+
+Options:
+    - major    : (2.8.0 -> 3.0.0)
+    - minor    : (2.8.0 -> 2.9.0-SNAPSHOT)
+    - patch    : (2.8.0 -> 2.8.1-SNAPSHOT)
+    - release  : (2.9.0-SNAPSHOT -> 2.9.0)
+"""
+
+def read_pom_properties():
+    """
+    Reads the revision and changelist properties from the POM file.
+
+    Args:
+        pom_file (str): Path to the POM file.
+
+    Returns:
+        tuple: A tuple containing the revision and changelist values.
+
+    Example:
+        revision, changelist = read_pom_properties('pom.xml')
+    """
+    tree = ET.parse(pom_file)
     root = tree.getroot()
-    for build in root:
-        if (build.tag == "{http://maven.apache.org/POM/4.0.0}version"):
-            return build.text
-    raise ValueError("Pom must need to have a version tag.")
+    namespace = {'mvn': 'http://maven.apache.org/POM/4.0.0'}
+    revision = root.find('mvn:properties/mvn:revision', namespace).text
+    changelist = root.find('mvn:properties/mvn:changelist', namespace).text
+    return revision, changelist
 
+def get_version(revision, changelist, version_type):
+    """
+    Generates the new version based on the version type.
 
-# get the next version
-def get_next_version(current_version, version_command):
-    # cleanup
-    base_version = current_version.replace("-SNAPSHOT", "").replace("-RELEASE", "").replace("-PATCH", "")
-    parts = base_version.split('.')
-    #
-    if version_command == "next-minor":
-        # increment the version to next minor SNAPSHOT
-        parts[-1] = str(int(parts[-1]) + 1)
-        return '.'.join(parts)
-    elif version_command == "next-major":
-        # increment the version to next minor
-        parts[1] = str(int(parts[1]) + 1)
-        return '.'.join(parts)
+    Args:
+        revision (str): The current revision.
+        changelist (str): The current changelist.
+        version_type (str): The type of version update ('major', 'minor', 'patch', 'release').
+
+    Returns:
+        tuple: A tuple containing the new revision and changelist values.
+
+    Example:
+        new_revision, new_changelist = get_version('2.8.0', '-SNAPSHOT', 'minor')
+    """
+    parts = revision.split('.')
+    major, minor, patch = int(parts[0]), int(parts[1]), int(parts[2])
+    if version_type == 'major':
+        major += 1
+        minor = 0
+        patch = 0
+        changelist = '-SNAPSHOT'
+    elif version_type == 'minor':
+        minor += 1
+        patch = 0
+        changelist = '-SNAPSHOT'
+    elif version_type == 'patch':
+        patch += 1
+        changelist = '-SNAPSHOT'
+    elif version_type == 'release' and changelist == '-SNAPSHOT':
+        changelist = ''
+    new_revision = f"{major}.{minor}.{patch}"
+    return new_revision, changelist
+
+def print_help():
+    print("Usage >: python version_update.py <version> \n options: "
+          "\n - major    : (2.8.0 -> 3.0.0-SNAPSHOT)"
+          "\n - minor    : (2.8.0 -> 2.1.0-SNAPSHOT)"
+          "\n - patch    : (2.8.0 -> 2.8.1-SNAPSHOT)"
+          "\n - release  : (2.9.0-SNAPSHOT -> 2.9.0)")
+
+def update_pom(version_old, revision, changelist):
+    """
+    Updates the POM file with the new version information.
+
+    Args:
+        version_old (str): The old version string.
+        revision (str): The new revision.
+        changelist (str): The new changelist.
+        pom_file (str): Path to the POM file.
+
+    Example:
+        update_pom('2.8.0-SNAPSHOT', '2.8.1', '', 'pom.xml')
+    """
+    print(f"updating pom version from {version_old} -> {revision}{changelist}")
+    if input("Do you want to update the pom version (y/n): ").lower() != 'y':
+        sys.exit(0)
+    dom = minidom.parse(pom_file)
+    properties = dom.getElementsByTagName('properties')[0]
+    revision_elements = dom.getElementsByTagName('revision')
+    changelist_elements = dom.getElementsByTagName('changelist')
+
+    if revision_elements and revision_elements[0].firstChild:
+        revision_elements[0].firstChild.nodeValue = revision
     else:
-        # manual version
-        pattern = r'^\d+\.\d+\.\d+(-SNAPSHOT|-RELEASE)?$'
-        if not re.match(pattern, version_command):
-            raise ValueError(f"Invalid version format {version_command}")
-        return version_command
+        new_revision = dom.createElement('revision')
+        new_revision.appendChild(dom.createTextNode(revision))
+        properties.appendChild(new_revision)
 
-
-def execute_maven_command(version):
-    command = f"mvn versions:set -DnewVersion={version} -DgenerateBackupPoms=false"
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    if process.returncode != 0:
-        print(f"Error executing command: {stderr.decode()}")
+    if changelist_elements and changelist_elements[0].firstChild:
+        changelist_elements[0].firstChild.nodeValue = changelist
     else:
-        print(stdout.decode())
+        for elem in changelist_elements:
+            if not elem.firstChild or not elem.firstChild.nodeValue.strip():
+                properties.removeChild(elem)
+        new_changelist = dom.createElement('changelist')
+        new_changelist.appendChild(dom.createTextNode(changelist))
+        properties.appendChild(new_changelist)
 
-def replace_in_specified_module(version, *modules):
-    for module in modules:
-        command = f"mvn versions:set -DnewVersion={version} -DgenerateBackupPoms=false -pl {module}"
-        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = process.communicate()
-        if process.returncode != 0:
-            print(f"Error executing command: {stderr.decode()}")
-        else:
-            print(stdout.decode())
+    with open(pom_file, 'w') as f:
+        dom.writexml(f)
+
+def update_readme(new_version, updated_changelist):
+    if(updated_changelist == '-SNAPSHOT'):
+        return
+
+    # Read the content of the README.md file
+    with open('README.md', 'r') as file:
+        content = file.read()
+
+    # Define the regex patterns for Maven and Gradle version updates
+    maven_pattern = r'(<version>)(\d+\.\d+\.\d+)(</version>)'
+    gradle_pattern = r"(version: ')(\d+\.\d+\.\d+)(')"
+
+    # Replace the old version with the new version
+    updated_content = re.sub(maven_pattern, r'\g<1>' + new_version + r'\g<3>', content)
+    updated_content = re.sub(gradle_pattern, r'\g<1>' + new_version + r'\g<3>', updated_content)
+
+    # Write the updated content back to the README.md file
+    with open('README.md', 'w') as file:
+        file.write(updated_content)
+
+    print("Version updated successfully.")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage >> python version_update.py <version> next | next-minor | next-major ")
+        print_help()
     else:
-        version_new = sys.argv[1]
-        version_current = get_root_pom_version()
-        version_next = get_next_version(version_current, version_new)
-        print(f"Updating the pom version from {version_current} to {version_next}")
-        print("Press `Y` to continue...")
-        if input().lower() == 'y':
-            print("Updating the version...")
-            execute_maven_command(version_next)
-            print("Updating the version in specified modules...")
-            # please disable this line if you don't have any module
-            replace_in_specified_module(version_next, "gateway-bom")
-            print("Done...")
+        revision, changelist = read_pom_properties()
+        changelist = changelist or ''
+        version_old = revision + changelist
+        version_type = sys.argv[1]
+        if version_type in ['major', 'minor', 'patch', 'release']:
+            uprated_revision, updated_changelist = get_version(revision, changelist, version_type)
+            update_pom(version_old, uprated_revision, updated_changelist)
+            update_readme(uprated_revision, updated_changelist)
         else:
-            print("Operation cancelled...")
+            print_help()
