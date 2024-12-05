@@ -4,3 +4,4 @@
 ./reports
 /reports/
 *.iml
+**/.flattened-pom.xml
