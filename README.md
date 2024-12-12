@@ -1,12 +1,20 @@
 # eJMask `{*:*}`
 
-eJMask is a JVM-based masking library that provides an easy-to-use API for masking sensitive data in your Java applications. With eJMask, you can quickly mask sensitive information like personal information, credit card numbers, and more. eJMask library is designed to provide a simple interface to make masking sensitive data sets before logging easier and simpler without impacting performance.
+eJMask is a JVM-based masking library that provides an easy-to-use API for masking sensitive data in your Java applications. With eJMask, you can quickly mask sensitive information like personal information, credit card numbers, and more. eJMask library is designed to provide a simple interface to make masking sensitive data sets before
+logging easier and simpler without impacting performance.
 
 ### Features
+
 - Easy-to-use API for integration into your Java applications
 - Support for multiple masking strategies, including character substitution and partial masking
 - Custom masking strategies can be added easily to meet your specific needs
 - Lightweight and efficient, with no external dependencies
+
+### Dependencies
+
+| JDK Version | Spring Version | Spring Boot Version |
+|-------------|----------------|---------------------|
+| 8           | 5.3.31         | 2.7.18              |
 
 ### Getting Started
 
@@ -41,7 +49,8 @@ public class EJMaskExample {
 
 `IPatternBuilder` implementations are responsible to generate the regular expression needed to replace data to be masked. Pattern builder also have additional responsibility to optimize the regex by creating one expression to mask all list of field names for better performance.
 
-#### eg: 
+#### eg:
+
 ```java
 public class JsonPatternBuilder implements IPatternBuilder {
 
@@ -57,7 +66,9 @@ public class JsonPatternBuilder implements IPatternBuilder {
     }
 }
 ``` 
+
 #### Extensions
+
 For many standard use cases you can make use of pattern builders defined in `ejmask-extensions` module.
 
 - HeaderFieldPatternBuilder
@@ -71,6 +82,7 @@ For many standard use cases you can make use of pattern builders defined in `ejm
 `IFilter` defines how a field should be masked. This includes the field name, the pattern builder need to be used, number of characters need to be visible at the end or beginning, etc.
 
 eg:
+
 ```java
 
 public class Sample implements IFilter {
@@ -86,6 +98,7 @@ public class Sample implements IFilter {
     }
 }
 ```
+
 > Users can also override default values for `VisibleCharacters`,`Group`, `Order)` etc if needed.
 
 ### ContentProcessor
@@ -94,6 +107,7 @@ public class Sample implements IFilter {
 A few use case we can use is to decode and encode the string before masking and/or to reduce the size of a large string before performing the masking operation to improve performance.
 
 #### Extensions
+
 - ContentSlicerPreProcessor
 
 ### LogProvider
@@ -107,6 +121,7 @@ LoggerUtil.register(new MyLogProvider());
 ## Getting Started
 
 ### Supported Languages
+
 eJMask is created as a Maven based Java project and can be used as a dependency in a Java based application or other JVM based languages such as Kotlin, Groovy, Scala etc.
 
 ### Manual configuration.
@@ -116,7 +131,7 @@ eJMask will internally dedupe the given set of filters and generate the most opt
 
 #### Adding Filters
 
-Invoke `EJMaskInitializer.addFilters` with list of all Filter instances. `EJMaskInitializer` Internally removes all duplicate and optimizes the MaskingPatterns by grouping similar patterns. 
+Invoke `EJMaskInitializer.addFilters` with list of all Filter instances. `EJMaskInitializer` Internally removes all duplicate and optimizes the MaskingPatterns by grouping similar patterns.
 
 #### Adding ContentProcessors
 
@@ -145,6 +160,7 @@ If you are using spring application ejamsk configurations can easily be auto wir
 - Done !!
 
 ```java
+
 @Component("data-filter.add-address")
 public class AddAddressFilter extends BaseFilter {
     AddAddressFilter() {
@@ -165,6 +181,7 @@ public class AddAddressFilter extends BaseFilter {
 - ✔ Done !!
 
 ```java
+
 @Configuration("data-filter.config.add-shareholder")
 public class AddShareholderRequestFilterConfiguration {
 
@@ -189,26 +206,29 @@ eJMask is a spring native library, spring eases the process of configuring eJMas
 Fist add `ejmask-spring-core` to your dependency list.
 
 ```xml
+
 <dependency>
-  <groupId>com.ebay.ejmask</groupId>
-  <artifactId>ejmask-spring-autoconfig</artifactId>
+    <groupId>com.ebay.ejmask</groupId>
+    <artifactId>ejmask-spring-core</artifactId>
 </dependency>
 ```
 
 then simply add `com.ebay.ejmask.spring.core` to your spring context scanning.
 
 ```xml
+
 <context:component-scan base-package="com.ebay.ejmask.spring.core"/>
 ```
 
 #### AutoConfiguration
 
-If your application is built on spring boot you can skip the above step by simply adding `ejmask-spring-boot` into dependency list.
+If your application is built on spring boot you can skip the above step by simply adding `ejmask-spring-starter` into dependency list.
 
 ```xml
+
 <dependency>
-  <groupId>com.ebay.ejmask</groupId>
-  <artifactId>ejmask-spring-boot</artifactId>
+    <groupId>com.ebay.ejmask</groupId>
+    <artifactId>ejmask-spring-starter</artifactId>
 </dependency>
 ```
 
@@ -228,12 +248,15 @@ You can download source and binaries from our [release page](https://github.com/
 Alternatively you can pull it from the central Maven repositories:
 
 ### Using in your maven project.
+
 > Please check the release version before adding to your project.
+
 ```xml
+
 <dependency>
-  <groupId>com.ebay.ejmask</groupId>
-  <artifactId>ejmask-bom</artifactId>
-  <version>1.2.1</version>
+    <groupId>com.ebay.ejmask</groupId>
+    <artifactId>ejmask-bom</artifactId>
+    <version>1.2.1</version>
 </dependency>
 ```
 
@@ -252,8 +275,8 @@ compile group: 'com.ebay.ejmask', name: 'ejmask-bom', version: '1.2.1'
 - [ ] Users will should be able to configure data filters through `ejmask.ymal`.
 - [ ] Users will be able to mask any given field by annotating with `@Mask` annotation.
 
-
 ## License Information
+
 Copyright 2023 eBay Inc.
 
 Author(s): [Prasanth Kaimattil Venu](https://github.com/prasanthkv), [Manikandan Perumal](https://github.com/tbd)
@@ -261,3 +284,4 @@ Author(s): [Prasanth Kaimattil Venu](https://github.com/prasanthkv), [Manikandan
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+

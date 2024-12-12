@@ -1,5 +1,4 @@
 package com.ebay.ejmask.core.util;
-
 /**
  * Copyright (c) 2023 eBay Inc.
  * <p>
@@ -15,7 +14,6 @@ package com.ebay.ejmask.core.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -89,7 +87,7 @@ public class CommonUtils {
      * @param array the array to retrieve the length from, may be null
      * @return The length of the array, or {@code 0} if the array is {@code null}
      */
-    private static int getLength(final Object array) {
+    private static int getLength(Object array) {
         return (array == null) ? 0 : Array.getLength(array);
     }
 
@@ -102,7 +100,7 @@ public class CommonUtils {
      * @return {@code true} if the CharSequence is
      * not empty and not null and not whitespace only
      */
-    public static boolean isNotBlank(final CharSequence cs) {
+    public static boolean isNotBlank(CharSequence cs) {
         return !isBlank(cs);
     }
 
@@ -114,8 +112,8 @@ public class CommonUtils {
      * @param cs the CharSequence to check, may be null
      * @return {@code true} if the CharSequence is null, empty or whitespace only
      */
-    public static boolean isBlank(final CharSequence cs) {
-        final int strLen = cs == null ? 0 : cs.length();
+    public static boolean isBlank(CharSequence cs) {
+        int strLen = cs == null ? 0 : cs.length();
         if (strLen != 0) {
             for (int i = 0; i < strLen; i++) {
                 if (!Character.isWhitespace(cs.charAt(i))) {

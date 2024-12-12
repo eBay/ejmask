@@ -13,4 +13,22 @@
             <Bug code="IJU"/>
         </Not>
     </Match>
+
+    <!-- Exclude CT_CONSTRUCTOR_THROW for BaseFilter constructors -->
+    <Match>
+        <Class name="com.ebay.ejmask.core.BaseFilter">
+            <Method name="BaseFilter" params="java.lang.Class,java.lang.String[]"/>
+            <Method name="BaseFilter" params="java.lang.Class,int,java.lang.String[]"/>
+            <Method name="BaseFilter" params="java.lang.Class,int,int,java.lang.String[]"/>
+        </Class>
+        <Bug pattern="CT_CONSTRUCTOR_THROW"/>
+    </Match>
+
+    <!-- Exclude INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE for CommonUtils.getStackTrace -->
+    <Match>
+        <Class name="com.ebay.ejmask.core.util.CommonUtils">
+            <Method name="getStackTrace" params="java.lang.Throwable"/>
+        </Class>
+        <Bug pattern="INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE"/>
+    </Match>
 </FindBugsFilter>
