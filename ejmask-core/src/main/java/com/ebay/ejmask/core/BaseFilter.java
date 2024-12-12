@@ -1,5 +1,4 @@
 package com.ebay.ejmask.core;
-
 /**
  * Copyright (c) 2023 eBay Inc.
  * <p>
@@ -41,7 +40,6 @@ public class BaseFilter implements IFilter {
      * @param patternBuilder new value of patternBuilder
      * @param fieldNames     new value of fieldNames
      */
-    @SafeVarargs
     public BaseFilter(Class<? extends IPatternBuilder> patternBuilder, String... fieldNames) {
         this(patternBuilder, DEFAULT_VISIBLE_CHAR, DEFAULT_PRIORITY, fieldNames);
     }
@@ -53,7 +51,6 @@ public class BaseFilter implements IFilter {
      * @param visibleCharacters new value of visibleCharacters
      * @param fieldNames        new value of fieldNames
      */
-    @SafeVarargs
     public BaseFilter(Class<? extends IPatternBuilder> patternBuilder, int visibleCharacters, String... fieldNames) {
         this(patternBuilder, visibleCharacters, DEFAULT_PRIORITY, fieldNames);
     }
@@ -67,7 +64,6 @@ public class BaseFilter implements IFilter {
      * @param order             new value of order
      * @param fieldNames        new value of fieldNames
      */
-    @SafeVarargs
     public BaseFilter(Class<? extends IPatternBuilder> patternBuilder, int visibleCharacters, int order, String... fieldNames) {
         if (patternBuilder == null) {
             throw new IllegalArgumentException("patternBuilder cannot be null.");
@@ -80,7 +76,6 @@ public class BaseFilter implements IFilter {
         this.order = order;
         this.fieldNames = fieldNames;
     }
-
 
     /**
      * Get the value of patternBuilder

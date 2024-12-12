@@ -24,10 +24,9 @@ import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-
-import javax.inject.Named;
 
 /**
  * Component scan configuration for ejmask auto configuration
@@ -35,7 +34,7 @@ import javax.inject.Named;
  * @author prakv
  */
 @AutoConfigureOrder(105)
-@Named("ejmask.autoconfig")
+@Configuration("ejmask.autoconfig")
 @ComponentScan(basePackageClasses = EJMaskSpringCoreContextConfiguration.class)
 @ConditionalOnProperty(prefix = "ejmask.", name = "autoconfig", havingValue = "enabled", matchIfMissing = true)
 public class EJMaskAutoConfig {

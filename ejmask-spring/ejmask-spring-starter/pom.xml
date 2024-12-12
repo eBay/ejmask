@@ -7,14 +7,9 @@
         <version>${revision}${changelist}</version>
     </parent>
 
-    <artifactId>ejmask-spring-autoconfig</artifactId>
+    <artifactId>ejmask-spring-starter</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>com.ebay.ejmask</groupId>
-            <artifactId>ejmask-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.ebay.ejmask</groupId>
             <artifactId>ejmask-spring-core</artifactId>
@@ -22,12 +17,28 @@
         </dependency>
         <dependency>
             <groupId>com.ebay.ejmask</groupId>
-            <artifactId>ejmask-spring-boot</artifactId>
+            <artifactId>ejmask-extensions</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <!-- Tests -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

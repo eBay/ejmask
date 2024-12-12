@@ -23,8 +23,8 @@ import com.ebay.ejmask.core.EJMaskInitializer;
 import com.ebay.ejmask.core.util.LoggerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.InitializingBean;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
@@ -33,8 +33,8 @@ import java.util.List;
  *
  * @author prakv
  */
-@Configuration("ejMaskSpringCoreContextConfiguration")
-public class EJMaskSpringCoreContextConfiguration {
+@Configuration("com.ebay.ejmask.configuration")
+public class EJMaskSpringCoreContextConfiguration implements InitializingBean {
 
     @Autowired(required = false)
     List<IFilter> filters;
@@ -48,12 +48,12 @@ public class EJMaskSpringCoreContextConfiguration {
     /**
      * Execute post object construction
      */
-    @PostConstruct
-    public void init() {
+    @Override
+    public void afterPropertiesSet() {
         LoggerUtil.info("ejmask-spring-core", "context-configuration", "initialization started");
-        EJMaskInitializer.addFilters(this.filters);
-        EJMaskInitializer.addMaskingPatterns(this.maskingPatterns);
-        EJMaskInitializer.addContentProcessors(this.contentPreProcessors);
+        EJMaskInitializer.addFilters(filters);
+        EJMaskInitializer.addMaskingPatterns(maskingPatterns);
+        EJMaskInitializer.addContentProcessors(contentPreProcessors);
         LoggerUtil.info("ejmask-spring-core", "context-configuration", "initialization completed");
     }
 }

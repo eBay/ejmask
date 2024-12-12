@@ -40,12 +40,7 @@
             </dependency>
             <dependency>
                 <groupId>com.ebay.ejmask</groupId>
-                <artifactId>ejmask-spring-boot</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.ebay.ejmask</groupId>
-                <artifactId>ejmask-spring-autoconfig</artifactId>
+                <artifactId>ejmask-spring-starter</artifactId>
                 <version>${project.parent.version}</version>
             </dependency>
         </dependencies>

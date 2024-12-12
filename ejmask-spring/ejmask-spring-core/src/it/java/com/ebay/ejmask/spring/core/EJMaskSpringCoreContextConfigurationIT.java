@@ -1,29 +1,30 @@
 package com.ebay.ejmask.spring.core;
 
-
 import com.ebay.ejmask.core.EJMask;
 import com.ebay.ejmask.core.EJMaskInitializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContextManager;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 /**
  * Objective of this Integration test is ensure that all spring bean wiring works as expected.
@@ -31,76 +32,66 @@ import java.util.Collection;
  *
  * @author prakv
  */
-@RunWith(Parameterized.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {FilterContextConfiguration.class}, loader = AnnotationConfigContextLoader.class)
-public class EJMaskSpringCoreContextConfigurationIT {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class EJMaskSpringCoreContextConfigurationIT {
 
-    @Parameterized.Parameter
-    public String testName;
-
-    @Parameterized.Parameter(1)
-    public String input;
-
-    @Parameterized.Parameter(2)
-    public String expected;
-
-    TestContextManager testContextManager;
-
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        this.testContextManager = new TestContextManager(this.getClass());
-        this.testContextManager.prepareTestInstance(this);
+        new TestContextManager(this.getClass()).prepareTestInstance(this);
     }
 
-    @Test
-    public void test1VerifySetUp() {
-        Assert.assertFalse(EJMaskInitializer.getMaskingPatterns().isEmpty());
-        Assert.assertFalse(EJMaskInitializer.getContentPreProcessors().isEmpty());
+    @Order(2)
+    @ParameterizedTest
+    @MethodSource("data")
+    @DisplayName("Verify the request is masked as expected")
+    public void test1_verify_the_request_is_masked_as_expected(String testName, String input, String expected) {
+        Assertions.assertFalse(EJMaskInitializer.getMaskingPatterns().isEmpty());
+        Assertions.assertFalse(EJMaskInitializer.getContentPreProcessors().isEmpty());
+        //
+        String actual = EJMask.mask(input);
+        Assertions.assertEquals(expected, actual);
+        Assertions.assertFalse(actual.contains("sensitiveData"));
     }
 
-    @Parameterized.Parameters(name = "{0}")
-    public static Collection<Object[]> data() throws Exception {
-        return Arrays.asList(new Object[]{"testEmpty", "", ""},
-                testJson(),
+    @Order(3)
+    @ParameterizedTest
+    @MethodSource("data")
+    @DisplayName("Verify the request is masked as expected even if the string got json serialized")
+    public void test2_verify_the_request_is_masked_as_expected_even_if_the_string_got_json_serialized(String testName, String input, String expected) throws Exception {
+        Assertions.assertFalse(EJMaskInitializer.getMaskingPatterns().isEmpty());
+        Assertions.assertFalse(EJMaskInitializer.getContentPreProcessors().isEmpty());
+        //
+        String actual = EJMask.mask(new ObjectMapper().writeValueAsString(input));
+        Assumptions.assumeFalse(actual.contains("sensitiveData"));
+    }
+
+    @Order(4)
+    @ParameterizedTest
+    @MethodSource("data")
+    @DisplayName("Verify the masking operation meets SLA")
+    public void test3_verify_the_masking_operation_meets_SLA(String testName, String input, String expected) {
+        Assertions.assertFalse(EJMaskInitializer.getMaskingPatterns().isEmpty());
+        Assertions.assertFalse(EJMaskInitializer.getContentPreProcessors().isEmpty());
+        //
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 1000; i++) {
+            EJMask.mask(input);
+        }
+        long maskTime = System.currentTimeMillis() - start;
+        Assumptions.assumeTrue(maskTime < 2000, "masking should be done in sub ms : (current:" + maskTime + "ms)");
+    }
+
+    static Stream<Object[]> data() throws Exception {
+        return Stream.of(
+                new Object[]{"testEmpty", "", ""},
                 testHTTPHeaders(),
+                testJson(),
                 testFlatString(),
                 test_big_string(),
-                //always last
-                test_largeData());
-    }
-
-    /**
-     * This test validate the given string is masked as expected.
-     */
-    @Test
-    public void test1_verify_the_request_is_masked_as_expected() {
-        String actual = EJMask.mask(this.input);
-        Assert.assertEquals(this.expected, actual);
-        Assert.assertFalse(actual.contains("sensitiveData"));
-    }
-
-    /**
-     * This test validate the given string is masked as expected. in case the string got json encoded.
-     */
-    @Test
-    public void test2_verify_the_request_is_masked_as_expected_even_if_the_string_got_json_serialized() throws Exception {
-        String actual = EJMask.mask(new ObjectMapper().writeValueAsString(this.input));
-        Assume.assumeFalse(actual, actual.contains("sensitiveData"));
-    }
-
-    /**
-     * This test will invoke mask operation 1000 times and validate the
-     * operation matching SLA ( sub ms )
-     */
-    @Test
-    public void test3_verify_the_masking_operation_meets_SLA() {
-        final long start = System.currentTimeMillis();
-        for (int i = 0; i < 1000; i++) {
-            EJMask.mask(this.input);
-        }
-        final long maskTime = System.currentTimeMillis() - start;
-        Assume.assumeTrue("masking should be done in sub ms : (current:" + maskTime + "ms)", maskTime < 2000);
+                test_largeData()
+        );
     }
 
     private static Object[] testHTTPHeaders() {
@@ -118,6 +109,7 @@ public class EJMaskSpringCoreContextConfigurationIT {
                 "&Content-Type=application/json";
         return new Object[]{"testHTTPHeaders", actual, expected};
     }
+
 
     private static Object[] testFlatString() {
         String actual = "insensitiv:afasdf\n"
@@ -388,8 +380,6 @@ public class EJMaskSpringCoreContextConfigurationIT {
                 + "    \"contentEncoding\":\"BASE_64\","
                 + "    \"documentContent\":\"w0KGgoAAAA-xxxx\","
                 + "    \"content\":\"/9j/4AAQSk-xxxx";
-
         return new Object[]{"test_largeData", actual, expected};
     }
-
 }
