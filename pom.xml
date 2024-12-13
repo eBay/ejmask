@@ -25,10 +25,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <revision>1.3.0</revision>
-        <changelist></changelist>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <revision>2.0.0</revision>
+        <changelist>-SNAPSHOT</changelist>
     </properties>
 
     <scm>
@@ -104,7 +104,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
-            <version>4.11.0</version>
+            <version>5.2.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

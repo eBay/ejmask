@@ -14,7 +14,7 @@ logging easier and simpler without impacting performance.
 
 | JDK Version | Spring Version | Spring Boot Version |
 |-------------|----------------|---------------------|
-| 8           | 5.3.31         | 2.7.18              |
+| 17          | 6.1.11         | 3.2.8               |
 
 ### Getting Started
 
