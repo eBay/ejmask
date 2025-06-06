@@ -73,6 +73,7 @@ For many standard use cases you can make use of pattern builders defined in `ejm
 
 - HeaderFieldPatternBuilder
 - XmlFieldPattenBuilder
+- JsonMiddleValuePatternBuilder
 - JsonFullValuePatternBuilder
 - JsonFieldPatternBuilder
 - JsonRelativeFieldPatternBuilder
@@ -256,14 +257,14 @@ Alternatively you can pull it from the central Maven repositories:
 <dependency>
     <groupId>com.ebay.ejmask</groupId>
     <artifactId>ejmask-bom</artifactId>
-    <version>1.2.1</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
 ### Using in your Gradle Project.
 
 ```groovy
-compile group: 'com.ebay.ejmask', name: 'ejmask-bom', version: '1.2.1'
+compile group: 'com.ebay.ejmask', name: 'ejmask-bom', version: '2.0.0'
 ```
 
 ## Roadmap
