@@ -10,7 +10,7 @@ public class JsonMiddleValuePatternBuilder extends AbstractRegexPatternBuilder {
     /**
      * Build pattern to match.
      *
-     * @param visibleCharacters as the number of characters to be visible (should be even and >= 2).
+     * @param visibleCharacters  as the number of characters to be visible (should be even and >= 2).
      * @param fieldNames       as list of field names.
      * @return match pattern.
      */
