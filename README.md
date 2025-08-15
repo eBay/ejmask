@@ -71,12 +71,16 @@ public class JsonPatternBuilder implements IPatternBuilder {
 
 For many standard use cases you can make use of pattern builders defined in `ejmask-extensions` module.
 
-- HeaderFieldPatternBuilder
-- XmlFieldPattenBuilder
-- JsonMiddleValuePatternBuilder
-- JsonFullValuePatternBuilder
-- JsonFieldPatternBuilder
-- JsonRelativeFieldPatternBuilder
+- [HeaderFieldPatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/header/HeaderFieldPatternBuilder.java)
+- [JsonBodyPatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonBodyPatternBuilder.java)
+- [JsonBooleanFieldPatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonBooleanFieldPatternBuilder.java)
+- [JsonFieldPatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonFieldPatternBuilder.java)
+- [JsonFullValuePatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonFullValuePatternBuilder.java)
+- [JsonMiddleValuePatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonMiddleValuePatternBuilder.java)
+- [JsonNumberFieldPatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonNumberFieldPatternBuilder.java)
+- [JsonRelativeFieldPatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonRelativeFieldPatternBuilder.java)
+- [JsonValueUnmaskFromEndPatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonValueUnmaskFromEndPatternBuilder.java)
+- [XmlFieldPattenBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/xml/XmlFieldPattenBuilder.java)
 
 ### IFilter
 
