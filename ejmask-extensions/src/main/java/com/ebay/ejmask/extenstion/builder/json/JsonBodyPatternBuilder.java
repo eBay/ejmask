@@ -11,7 +11,7 @@ import com.ebay.ejmask.extenstion.builder.AbstractRegexPatternBuilder;
 public class JsonBodyPatternBuilder extends AbstractRegexPatternBuilder {
 
     // https://regex101.com/r/s06mba/1
-    private static final String PATTERN_TEMPLATE = "\\\"(%s)(\\\\*\\\"\\s*:\\s*\\\\*\\{)[^\\{\\}]*(\\\\?\\}|)";
+    private static final String PATTERN_TEMPLATE = "\\\"(%s)(\\\\*\\\"\\s*:\\s*\\\\*\\{)[^\\{\\}]*(\\})";
     // group $1 = field name
     // group $2 =  ": {" (with json serialization support)
     // group $3 =  sensitive information -> ignore
