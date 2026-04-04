@@ -1,20 +1,12 @@
 # eJMask `{*:*}`
 
-eJMask is a JVM-based masking library that provides an easy-to-use API for masking sensitive data in your Java applications. With eJMask, you can quickly mask sensitive information like personal information, credit card numbers, and more. eJMask library is designed to provide a simple interface to make masking sensitive data sets before
-logging easier and simpler without impacting performance.
+eJMask is a JVM-based masking library that provides an easy-to-use API for masking sensitive data in your Java applications. With eJMask, you can quickly mask sensitive information like personal information, credit card numbers, and more. eJMask library is designed to provide a simple interface to make masking sensitive data sets before logging easier and simpler without impacting performance.
 
 ### Features
-
 - Easy-to-use API for integration into your Java applications
 - Support for multiple masking strategies, including character substitution and partial masking
 - Custom masking strategies can be added easily to meet your specific needs
 - Lightweight and efficient, with no external dependencies
-
-### Dependencies
-
-| JDK Version | Spring Version | Spring Boot Version |
-|-------------|----------------|---------------------|
-| 17          | 6.1.11         | 3.2.8               |
 
 ### Getting Started
 
@@ -49,8 +41,7 @@ public class EJMaskExample {
 
 `IPatternBuilder` implementations are responsible to generate the regular expression needed to replace data to be masked. Pattern builder also have additional responsibility to optimize the regex by creating one expression to mask all list of field names for better performance.
 
-#### eg:
-
+#### eg: 
 ```java
 public class JsonPatternBuilder implements IPatternBuilder {
 
@@ -66,28 +57,164 @@ public class JsonPatternBuilder implements IPatternBuilder {
     }
 }
 ``` 
-
 #### Extensions
 
-For many standard use cases you can make use of pattern builders defined in `ejmask-extensions` module.
+For many standard use cases you can make use of pattern builders defined in the `ejmask-extensions` module.
 
-- [HeaderFieldPatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/header/HeaderFieldPatternBuilder.java)
-- [JsonBodyPatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonBodyPatternBuilder.java)
-- [JsonBooleanFieldPatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonBooleanFieldPatternBuilder.java)
-- [JsonFieldPatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonFieldPatternBuilder.java)
-- [JsonFullValuePatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonFullValuePatternBuilder.java)
-- [JsonMiddleValuePatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonMiddleValuePatternBuilder.java)
-- [JsonNumberFieldPatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonNumberFieldPatternBuilder.java)
-- [JsonRelativeFieldPatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonRelativeFieldPatternBuilder.java)
-- [JsonValueUnmaskFromEndPatternBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/json/JsonValueUnmaskFromEndPatternBuilder.java)
-- [XmlFieldPattenBuilder.java](ejmask-extensions/src/main/java/com/ebay/ejmask/extenstion/builder/xml/XmlFieldPattenBuilder.java)
+##### JSON Builders
+
+| Builder | Value Type | Masking Style |
+|---------|-----------|--------------|
+| `JsonFieldPatternBuilder` | String | First N chars visible, rest `→ -xxxx` |
+| `JsonFullValuePatternBuilder` | String | Fully replaced with `****` |
+| `JsonRelativeFieldPatternBuilder` | String | First N chars visible; matched relative to a parent field |
+| `JsonNumericFieldPatternBuilder` | Number | Always fully replaced with `"xxxx"` |
+| `JsonBooleanFieldPatternBuilder` | Boolean | Always fully replaced with `"xxxx"` |
+| `JsonValueUnmaskFromEndPatternBuilder` | String | Last N chars visible, start `→ xxxx-` |
+| `JsonPathValuePatternBuilder` | String | First N chars visible; accepts full JSONPath expressions |
+
+###### JsonFieldPatternBuilder
+
+Partially masks a JSON **string** field value, keeping the first N characters visible.
+
+```java
+EJMaskInitializer.addFilter(
+    new BaseFilter(JsonFieldPatternBuilder.class, 4, "firstName", "lastName")
+);
+// Input:  {"firstName":"sensitiveData","lastName":"anotherSecret"}
+// Output: {"firstName":"sens-xxxx","lastName":"anot-xxxx"}
+```
+
+###### JsonFullValuePatternBuilder
+
+Fully masks a JSON **string** field value. `visibleCharacters` must be `0`.
+
+```java
+EJMaskInitializer.addFilter(
+    new BaseFilter(JsonFullValuePatternBuilder.class, 0, "password", "ssn")
+);
+// Input:  {"password":"mySecret123","ssn":"123-45-6789"}
+// Output: {"password":"****","ssn":"****"}
+```
+
+###### JsonRelativeFieldPatternBuilder
+
+Masks a JSON **string** field whose identity depends on a parent field name. Useful when the same field name is sensitive only in a specific context (e.g. `buyer.name` but not `seller.name`).
+
+```java
+EJMaskInitializer.addFilter(
+    new BaseFilter(JsonRelativeFieldPatternBuilder.class, 4, "buyer", "name")
+);
+// Input:  {"buyer":{"name":"sensitiveData"},"seller":{"name":"publicName"}}
+// Output: {"buyer":{"name":"sens-xxxx"},"seller":{"name":"publicName"}}
+```
+
+###### JsonNumericFieldPatternBuilder
+
+Masks a JSON **numeric** field value (integer, decimal, or scientific notation). The number is always fully replaced with `"xxxx"` — `visibleCharacters` must be ≥ 1 but does not control how many digits are kept.
+
+```java
+EJMaskInitializer.addFilter(
+    new BaseFilter(JsonNumericFieldPatternBuilder.class, 1, "accountId", "zipCode")
+);
+// Input:  {"accountId":123456789,"zipCode":90210}
+// Output: {"accountId":"xxxx","zipCode":"xxxx"}
+```
+
+###### JsonBooleanFieldPatternBuilder
+
+Masks a JSON **boolean** field value (`true`/`false`/`True`/`False`/`TRUE`/`FALSE`). Always fully replaced with `"xxxx"` — `visibleCharacters` must be ≥ 1 but does not affect the output.
+
+```java
+EJMaskInitializer.addFilter(
+    new BaseFilter(JsonBooleanFieldPatternBuilder.class, 1, "isVerified", "hasConsent")
+);
+// Input:  {"isVerified":true,"hasConsent":false}
+// Output: {"isVerified":"xxxx","hasConsent":"xxxx"}
+```
+
+###### JsonValueUnmaskFromEndPatternBuilder
+
+Masks a JSON **string** field value keeping the **last** N characters visible — ideal for card numbers, phone numbers, or account identifiers where the tail is needed for identification.
+
+```java
+EJMaskInitializer.addFilter(
+    new BaseFilter(JsonValueUnmaskFromEndPatternBuilder.class, 4, "ccNumber", "ssn")
+);
+// Input:  {"ccNumber":"1234567890123456","ssn":"123456789"}
+// Output: {"ccNumber":"xxxx-3456","ssn":"xxxx-6789"}
+```
+
+
+###### JsonPathValuePatternBuilder
+
+Masks a JSON **string** field value using a full **JSONPath expression**. Supports filter-predicate paths and simple dotted field paths. Multiple expressions can be combined into a single filter for a single-pass replacement.
+
+```java
+// Filter predicate — mask a field in an array element matching all @.key=='value' conditions:
+EJMaskInitializer.addFilter(
+    new BaseFilter(JsonPathValuePatternBuilder.class, 4,
+        "$.deviceContext.fingerprints[?(@.source=='EBAY' && @.type=='DEVICE_ID')].value")
+);
+// Input:  {"source":"EBAY","type":"DEVICE_ID","value":"74f4ef092963b7439107285a8062c94a"}
+// Output: {"source":"EBAY","type":"DEVICE_ID","value":"74f4****"}
+
+// Simple dotted path — mask by field name anywhere in the document:
+EJMaskInitializer.addFilter(
+    new BaseFilter(JsonPathValuePatternBuilder.class, 4, "$.deviceContext.guid")
+);
+// Input:  {"guid":"some-guid-value"}
+// Output: {"guid":"some****"}
+
+// Multiple expressions combined into one filter:
+EJMaskInitializer.addFilter(
+    new BaseFilter(JsonPathValuePatternBuilder.class, 4,
+        "$.deviceContext.fingerprints[?(@.source=='EBAY' && @.type=='DEVICE_ID')].value",
+        "$.deviceContext.guid")
+);
+```
+
+##### Header Builder
+
+###### HeaderFieldPatternBuilder
+
+Masks HTTP **header** field values in a `key=value` query-string format. With `visibleCharacters = 0` the value is fully replaced with `******`; with `visibleCharacters > 0` the last N characters are kept after `xxxx-`.
+
+```java
+// Full mask:
+EJMaskInitializer.addFilter(
+    new BaseFilter(HeaderFieldPatternBuilder.class, 0, "Authorization", "X-API-Key")
+);
+// Input:  Authorization=Bearer secret-token-12345&Accept=application/json
+// Output: Authorization=******&Accept=application/json
+
+// Partial mask (shows last N chars):
+EJMaskInitializer.addFilter(
+    new BaseFilter(HeaderFieldPatternBuilder.class, 4, "Authorization")
+);
+// Input:  Authorization=Bearer secret-token-12345
+// Output: Authorization=xxxx-2345
+```
+
+##### XML Builder
+
+###### XmlFieldPattenBuilder
+
+Partially masks an **XML** element's text content, keeping the first N characters visible.
+
+```java
+EJMaskInitializer.addFilter(
+    new BaseFilter(XmlFieldPattenBuilder.class, 4, "firstName", "lastName")
+);
+// Input:  <firstName>sensitiveData</firstName><lastName>anotherSecret</lastName>
+// Output: <firstName>sens-xxxx</firstName><lastName>anot-xxxx</lastName>
+```
 
 ### IFilter
 
 `IFilter` defines how a field should be masked. This includes the field name, the pattern builder need to be used, number of characters need to be visible at the end or beginning, etc.
 
 eg:
-
 ```java
 
 public class Sample implements IFilter {
@@ -103,7 +230,6 @@ public class Sample implements IFilter {
     }
 }
 ```
-
 > Users can also override default values for `VisibleCharacters`,`Group`, `Order)` etc if needed.
 
 ### ContentProcessor
@@ -112,7 +238,6 @@ public class Sample implements IFilter {
 A few use case we can use is to decode and encode the string before masking and/or to reduce the size of a large string before performing the masking operation to improve performance.
 
 #### Extensions
-
 - ContentSlicerPreProcessor
 
 ### LogProvider
@@ -126,7 +251,6 @@ LoggerUtil.register(new MyLogProvider());
 ## Getting Started
 
 ### Supported Languages
-
 eJMask is created as a Maven based Java project and can be used as a dependency in a Java based application or other JVM based languages such as Kotlin, Groovy, Scala etc.
 
 ### Manual configuration.
@@ -136,7 +260,7 @@ eJMask will internally dedupe the given set of filters and generate the most opt
 
 #### Adding Filters
 
-Invoke `EJMaskInitializer.addFilters` with list of all Filter instances. `EJMaskInitializer` Internally removes all duplicate and optimizes the MaskingPatterns by grouping similar patterns.
+Invoke `EJMaskInitializer.addFilters` with list of all Filter instances. `EJMaskInitializer` Internally removes all duplicate and optimizes the MaskingPatterns by grouping similar patterns. 
 
 #### Adding ContentProcessors
 
@@ -165,7 +289,6 @@ If you are using spring application ejamsk configurations can easily be auto wir
 - Done !!
 
 ```java
-
 @Component("data-filter.add-address")
 public class AddAddressFilter extends BaseFilter {
     AddAddressFilter() {
@@ -186,7 +309,6 @@ public class AddAddressFilter extends BaseFilter {
 - ✔ Done !!
 
 ```java
-
 @Configuration("data-filter.config.add-shareholder")
 public class AddShareholderRequestFilterConfiguration {
 
@@ -211,29 +333,26 @@ eJMask is a spring native library, spring eases the process of configuring eJMas
 Fist add `ejmask-spring-core` to your dependency list.
 
 ```xml
-
 <dependency>
-    <groupId>com.ebay.ejmask</groupId>
-    <artifactId>ejmask-spring-core</artifactId>
+  <groupId>com.ebay.ejmask</groupId>
+  <artifactId>ejmask-spring-autoconfig</artifactId>
 </dependency>
 ```
 
 then simply add `com.ebay.ejmask.spring.core` to your spring context scanning.
 
 ```xml
-
 <context:component-scan base-package="com.ebay.ejmask.spring.core"/>
 ```
 
 #### AutoConfiguration
 
-If your application is built on spring boot you can skip the above step by simply adding `ejmask-spring-starter` into dependency list.
+If your application is built on spring boot you can skip the above step by simply adding `ejmask-spring-boot` into dependency list.
 
 ```xml
-
 <dependency>
-    <groupId>com.ebay.ejmask</groupId>
-    <artifactId>ejmask-spring-starter</artifactId>
+  <groupId>com.ebay.ejmask</groupId>
+  <artifactId>ejmask-spring-boot</artifactId>
 </dependency>
 ```
 
@@ -254,21 +373,18 @@ Alternatively you can pull it from the central Maven repositories:
 
 ### Using in your maven project.
 
-> Please check the release version before adding to your project.
-
 ```xml
-
 <dependency>
-    <groupId>com.ebay.ejmask</groupId>
-    <artifactId>ejmask-bom</artifactId>
-    <version>2.0.0</version>
+  <groupId>com.ebay.ejmask</groupId>
+  <artifactId>ejmask-bom</artifactId>
+  <version>2.0.3</version>
 </dependency>
 ```
 
 ### Using in your Gradle Project.
 
 ```groovy
-compile group: 'com.ebay.ejmask', name: 'ejmask-bom', version: '2.0.0'
+compile group: 'com.ebay.ejmask', name: 'ejmask-bom', version: '2.0.3'
 ```
 
 ## Roadmap
@@ -280,8 +396,8 @@ compile group: 'com.ebay.ejmask', name: 'ejmask-bom', version: '2.0.0'
 - [ ] Users will should be able to configure data filters through `ejmask.ymal`.
 - [ ] Users will be able to mask any given field by annotating with `@Mask` annotation.
 
-## License Information
 
+## License Information
 Copyright 2023 eBay Inc.
 
 Author(s): [Prasanth Kaimattil Venu](https://github.com/prasanthkv), [Manikandan Perumal](https://github.com/tbd)
@@ -289,4 +405,3 @@ Author(s): [Prasanth Kaimattil Venu](https://github.com/prasanthkv), [Manikandan
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-
