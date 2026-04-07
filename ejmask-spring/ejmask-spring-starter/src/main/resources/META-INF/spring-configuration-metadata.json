@@ -10,7 +10,7 @@
       "name": "ejmask.processor.content-slicer",
       "type": "java.lang.String",
       "description": "Enables the ContentSlicerProcessor, which truncates oversized payloads before masking to improve regex performance. Must be explicitly set to 'enabled'; absent by default.",
-      "defaultValue": "disabled"
+      "defaultValue": "enabled"
     },
     {
       "name": "ejmask.processor.content-slicer.priority",
