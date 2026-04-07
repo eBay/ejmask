@@ -26,12 +26,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.source>17</maven.compiler.source>
-        <revision>2.0.3</revision>
+        <revision>2.0.4</revision>
         <changelist></changelist>
     </properties>
 
     <scm>
         <connection>scm:git:git@github.com:eBay/ejmask.git</connection>
+        <developerConnection>scm:git:git@github.com:eBay/ejmask.git</developerConnection>
         <url>https://github.com/eBay/ejmask</url>
     </scm>
 
@@ -39,29 +40,34 @@
         <developer>
             <name>Prasanth Kaimattil Venu</name>
             <organization>ebay</organization>
-            <organizationUrl>http://www.ebay.com</organizationUrl>
+            <organizationUrl>https://www.ebay.com</organizationUrl>
         </developer>
     </developers>
 
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
 
     <distributionManagement>
-        <repository>
-            <id>ossrh</id>
-            <name>Central Repository OSSRH</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
         <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>central</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>central-portal-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <!-- Limit usage of external lib as much as possible -->
     <dependencyManagement>
@@ -102,8 +108,8 @@
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-inline</artifactId>
-            <version>5.2.0</version>
+            <artifactId>mockito-core</artifactId>
+            <version>5.15.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -245,7 +251,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <targetJdk>1.8</targetJdk>
+                    <targetJdk>17</targetJdk>
                     <rulesets>
                         <ruleset>favorites.xml</ruleset>
                     </rulesets>
@@ -307,14 +313,13 @@
             </plugin>
             <!-- central -->
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.7.0</version>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.7.0</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    <publishingServerId>central</publishingServerId>
+                    <centralSnapshotsUrl>https://central.sonatype.com/repository/maven-snapshots/</centralSnapshotsUrl>
                 </configuration>
             </plugin>
         </plugins>
@@ -349,7 +354,7 @@
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
-                                <phase>install</phase>
+                                <phase>verify</phase>
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>

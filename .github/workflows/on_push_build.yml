@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - develop
 
 permissions:
   contents: read
@@ -23,9 +24,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-          server-id: ossrh
-          server-username: ${{ secrets.OSSRH_USERNAME }}
-          server-password: ${{ secrets.OSSRH_PASSWORD }}
 
       - name: Cache local Maven repository
         uses: actions/cache@v3
@@ -40,10 +38,20 @@ jobs:
           GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
 
       - name: Build with Maven
-        run: mvn --batch-mode --update-snapshots verify -P release
+        run: |
+          if [[ "${{ github.ref_name }}" == "master" ]]; then
+            mvn --batch-mode --update-snapshots verify -P release -Dchangelist=
+          else
+            mvn --batch-mode --update-snapshots verify -P release -Dchangelist=-SNAPSHOT
+          fi
 
       - name: Deploy
-        run: mvn --batch-mode --settings settings.xml clean deploy -P release
+        run: |
+          if [[ "${{ github.ref_name }}" == "master" ]]; then
+            mvn --batch-mode -s settings.xml clean deploy -P release -Dchangelist=
+          else
+            mvn --batch-mode -s settings.xml clean deploy -P release -Dchangelist=-SNAPSHOT
+          fi
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
