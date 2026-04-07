@@ -1,0 +1,62 @@
+{
+  "properties": [
+    {
+      "name": "ejmask.autoconfig",
+      "type": "java.lang.String",
+      "description": "Enables or disables the entire EJMask Spring Boot auto-configuration. Omit or set to 'enabled' to activate; set to 'disabled' to suppress all EJMask wiring.",
+      "defaultValue": "enabled"
+    },
+    {
+      "name": "ejmask.processor.content-slicer",
+      "type": "java.lang.String",
+      "description": "Enables the ContentSlicerProcessor, which truncates oversized payloads before masking to improve regex performance. Must be explicitly set to 'enabled'; absent by default.",
+      "defaultValue": "disabled"
+    },
+    {
+      "name": "ejmask.processor.content-slicer.priority",
+      "type": "java.lang.Integer",
+      "description": "Execution order of the ContentSlicerProcessor relative to other content processors. Lower values run first. Only effective when ejmask.processor.content-slicer=enabled.",
+      "defaultValue": 50
+    },
+    {
+      "name": "ejmask.processor.content-slicer.max-size",
+      "type": "java.lang.Integer",
+      "description": "Maximum content length in characters before the ContentSlicerProcessor truncates the payload. Only effective when ejmask.processor.content-slicer=enabled.",
+      "defaultValue": 10000
+    },
+    {
+      "name": "ejmask.processor.content-slicer.new-size",
+      "type": "java.lang.Integer",
+      "description": "Target content length in characters after truncation by the ContentSlicerProcessor. Must be less than ejmask.processor.content-slicer.max-size. Only effective when ejmask.processor.content-slicer=enabled.",
+      "defaultValue": 4000
+    }
+  ],
+  "hints": [
+    {
+      "name": "ejmask.autoconfig",
+      "values": [
+        {
+          "value": "enabled",
+          "description": "EJMask auto-configuration is active (default)."
+        },
+        {
+          "value": "disabled",
+          "description": "EJMask auto-configuration is suppressed entirely; no beans are registered."
+        }
+      ]
+    },
+    {
+      "name": "ejmask.processor.content-slicer",
+      "values": [
+        {
+          "value": "enabled",
+          "description": "ContentSlicerProcessor bean is created and registered as a content pre-processor."
+        },
+        {
+          "value": "disabled",
+          "description": "ContentSlicerProcessor bean is not created (default)."
+        }
+      ]
+    }
+  ]
+}
