@@ -8,6 +8,7 @@
     </parent>
 
     <artifactId>ejmask-api</artifactId>
+    <name>eJMask API</name>
 
     <dependencies>
         <dependency>

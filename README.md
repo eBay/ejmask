@@ -1,5 +1,7 @@
 # eJMask `{*:*}`
 
+[![GitHub tag](https://img.shields.io/github/v/release/ebay/ejmask)](https://github.com/eBay/ejmask/releases)
+
 eJMask is a JVM-based masking library that provides an easy-to-use API for masking sensitive data in your Java applications. With eJMask, you can quickly mask sensitive information like personal information, credit card numbers, and more. eJMask library is designed to provide a simple interface to make masking sensitive data sets before logging easier and simpler without impacting performance.
 
 ### Features
@@ -384,13 +386,13 @@ If your application is built on spring boot you can skip the above step by simpl
 
 **Properties**
 
-| property                                   | description                                    | values               | default    |
-|--------------------------------------------|------------------------------------------------|----------------------|------------|
-| `ejmask.autoconfig`                        | Conditionally wire on flat                     | `enabled`,`disabled` | `enabled`  |
-| `ejmask.processor.content-slicer`          | Conditionally wire on content slicer processor | `enabled`,`disabled` | `disabled` |
-| `ejmask.processor.content-slicer.priority` | Content slicer priority                        | integer              | `50`       |
-| `ejmask.processor.content-slicer.max-size` | Content slicer maximum allowed length          | integer              | `10000`    |
-| `ejmask.processor.content-slicer.new-size` | Content slicer maximum new content size.       | integer              | `4000`     |
+| property                                   | description                                                                                                        | values               | default    |
+|--------------------------------------------|--------------------------------------------------------------------------------------------------------------------|----------------------|------------|
+| `ejmask.autoconfig`                        | Enables or disables the entire EJMask auto-configuration. Omit or set to `enabled` to activate.                    | `enabled`,`disabled` | `enabled`  |
+| `ejmask.processor.content-slicer`          | Enables the `ContentSlicerProcessor` bean, which truncates oversized payloads before masking. Disabled by default. | `enabled`,`disabled` | `disabled` |
+| `ejmask.processor.content-slicer.priority` | Execution order of the `ContentSlicerProcessor` relative to other content processors. Lower values run first.      | integer              | `50`       |
+| `ejmask.processor.content-slicer.max-size` | Maximum content length (characters) before the `ContentSlicerProcessor` truncates the payload.                     | integer              | `10000`    |
+| `ejmask.processor.content-slicer.new-size` | Target content length (characters) after truncation. Must be less than `ejmask.processor.content-slicer.max-size`. | integer              | `4000`     |
 
 ### Where can I get the latest release?
 

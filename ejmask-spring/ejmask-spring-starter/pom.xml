@@ -8,6 +8,7 @@
     </parent>
 
     <artifactId>ejmask-spring-starter</artifactId>
+    <name>eJMask Spring Boot Starter</name>
 
     <dependencies>
         <dependency>
