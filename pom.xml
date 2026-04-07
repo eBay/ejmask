@@ -353,6 +353,12 @@
             <properties>
                 <changelist/>
             </properties>
+            <distributionManagement>
+                <repository>
+                    <id>central</id>
+                    <url>https://central.sonatype.com/repository/maven-releases/</url>
+                </repository>
+            </distributionManagement>
             <build>
                 <plugins>
                     <!-- Sign artifacts -->
