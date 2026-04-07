@@ -1,4 +1,4 @@
-name: Build & Deploy (Master & Develop)
+name: Build & Deploy (Master)
 
 on:
   push:
