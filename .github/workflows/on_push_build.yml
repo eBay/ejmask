@@ -36,7 +36,7 @@ jobs:
 
       - name: Build & Deploy
         run: |
-          mvn clean deploy -s settings.xml --batch-mode -P release -Dchangelist=-RELEASE
+          mvn clean deploy -s settings.xml --batch-mode -P release -Dchangelist=-
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
