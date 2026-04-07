@@ -1,49 +1,41 @@
-name: Build & Deploy (Master & Develop)
-
+name: Build & Deploy (Master)
 on:
   push:
+    # Usage is limited to the master branch to avoid deploying releases on every push
     branches:
       - master
-      - develop
-
 permissions:
   contents: read
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
+      # Check out the repository source code.
       - name: Checkout
         uses: actions/checkout@v4
-
+      # Set up Java 17 and enable Maven dependency caching.
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-
+      # Restore the local Maven repository cache to speed up builds.
       - name: Cache local Maven repository
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
-
+      # Import the GPG signing key for release deployment.
       - name: Configure GPG Key
         run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
         env:
           GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
-
+      # Build the project and deploy the release artifact.
       - name: Build & Deploy
         run: |
-          if [[ "${{ github.ref_name }}" == "master" ]]; then
-            mvn  clean deploy -s settings.xml --batch-mode -P release -Dchangelist=
-          else
-            mvn  clean deploy -s settings.xml --batch-mode -P snapshot -Dchangelist=-SNAPSHOT
-          fi
+          mvn clean deploy -s settings.xml --batch-mode -P release -Dchangelist=
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
