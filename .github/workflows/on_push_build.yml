@@ -4,14 +4,11 @@ on:
   push:
     branches:
       - master
-      - develop
-
 permissions:
-  contents: read
-
+  contents: write
+  
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -39,11 +36,24 @@ jobs:
 
       - name: Build & Deploy
         run: |
-          if [[ "${{ github.ref_name }}" == "master" ]]; then
-            mvn  clean deploy -s settings.xml --batch-mode -P release -Dchangelist=-RELEASE
-          else
-            mvn  clean deploy -s settings.xml --batch-mode -P snapshot -Dchangelist=-SNAPSHOT
-          fi
+          mvn clean deploy -s settings.xml --batch-mode -P release -Dchangelist=
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+
+      - name: Extract Revision from POM
+        id: get_version
+        run: |
+          REVISION=$(xmllint --xpath "//*[local-name()='properties']/*[local-name()='revision']/text()" pom.xml)
+          echo "VERSION=$REVISION" >> $GITHUB_OUTPUT
+
+      - name: Create Tag and Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          name: Release v${{ steps.get_version.outputs.VERSION }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
