@@ -40,7 +40,7 @@ jobs:
       - name: Build & Deploy
         run: |
           if [[ "${{ github.ref_name }}" == "master" ]]; then
-            mvn  clean deploy -s settings.xml --batch-mode -P release -Dchangelist=
+            mvn  clean deploy -s settings.xml --batch-mode -P release -Dchangelist=-RELEASE
           else
             mvn  clean deploy -s settings.xml --batch-mode -P snapshot -Dchangelist=-SNAPSHOT
           fi
