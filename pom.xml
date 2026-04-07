@@ -326,6 +326,9 @@
     <profiles>
         <profile>
             <id>snapshot</id>
+            <properties>
+                <changelist>-SNAPSHOT</changelist>
+            </properties>
             <distributionManagement>
                 <snapshotRepository>
                     <id>central</id>
@@ -347,6 +350,9 @@
         </profile>
         <profile>
             <id>release</id>
+            <properties>
+                <changelist/>
+            </properties>
             <build>
                 <plugins>
                     <!-- Sign artifacts -->

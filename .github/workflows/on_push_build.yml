@@ -37,20 +37,12 @@ jobs:
         env:
           GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
 
-      - name: Build with Maven
+      - name: Build & Deploy
         run: |
           if [[ "${{ github.ref_name }}" == "master" ]]; then
-            mvn --batch-mode --update-snapshots verify -P release -Dchangelist=
+            mvn  clean deploy -s settings.xml --batch-mode -P release -Dchangelist=
           else
-            mvn --batch-mode --update-snapshots verify -P snapshot -Dchangelist=-SNAPSHOT
-          fi
-
-      - name: Deploy
-        run: |
-          if [[ "${{ github.ref_name }}" == "master" ]]; then
-            mvn --batch-mode -s settings.xml clean deploy -P release -Dchangelist=
-          else
-            mvn --batch-mode -s settings.xml clean deploy -P snapshot -Dchangelist=-SNAPSHOT
+            mvn  clean deploy -s settings.xml --batch-mode -P snapshot -Dchangelist=-SNAPSHOT
           fi
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
