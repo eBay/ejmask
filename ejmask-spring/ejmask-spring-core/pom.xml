@@ -8,6 +8,7 @@
     </parent>
 
     <artifactId>ejmask-spring-core</artifactId>
+    <name>eJMask Spring Core</name>
 
     <dependencies>
         <dependency>

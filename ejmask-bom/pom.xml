@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>ejmask-bom</artifactId>
+    <name>eJMask BOM</name>
     <packaging>pom</packaging>
 
     <description>

@@ -8,6 +8,7 @@
     </parent>
 
     <artifactId>ejmask-core</artifactId>
+    <name>eJMask Core</name>
 
     <dependencies>
         <dependency>
