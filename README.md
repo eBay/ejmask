@@ -76,6 +76,7 @@ For many standard use cases you can make use of pattern builders defined in the 
 | `JsonPathValuePatternBuilder`          | String       | First N chars visible; accepts full JSONPath expressions   |
 | `JsonBodyPatternBuilder`               | Object       | Fully replaces a nested JSON object with `{"****":"****"}` |
 | `JsonMiddleValuePatternBuilder`        | String       | Middle chars masked; first N/2 and last N/2 chars visible  |
+| `EscapedJsonFullValuePatternBuilder`   | String       | Fully replaced with `****`; matches escaped JSON (`\"key\":\"value\"`) |
 
 ###### JsonFieldPatternBuilder
 
@@ -202,6 +203,25 @@ EJMaskInitializer.addFilter(
 );
 ```
 
+###### EscapedJsonFullValuePatternBuilder
+
+Fully masks a JSON **string** field value inside **escaped JSON strings** — JSON encoded as a string value within another JSON document, where every quote character appears as `\"`. Use this instead of `JsonFullValuePatternBuilder` when the payload has been serialized as an escaped string. `visibleCharacters` must be `0`.
+
+```java
+// Input:  {\"cvv\":\"sensitiveData\",\"ssn\":\"123-45-6789\"}
+// Output: {\"cvv\":\"****\",\"ssn\":\"****\"}
+EJMaskInitializer.addFilter(
+    new BaseFilter(EscapedJsonFullValuePatternBuilder.class, 0, "cvv", "ssn")
+);
+
+// Also works when embedded as a value inside a regular JSON field:
+// Input:  {"body":"{\"cvv\":\"sensitiveData\",\"amount\":\"100\"}"}
+// Output: {"body":"{\"cvv\":\"****\",\"amount\":\"100\"}"}
+EJMaskInitializer.addFilter(
+    new BaseFilter(EscapedJsonFullValuePatternBuilder.class, 0, "cvv", "ssn")
+);
+```
+
 ##### Header Builder
 
 ###### HeaderFieldPatternBuilder
@@ -221,6 +241,27 @@ EJMaskInitializer.addFilter(
 // Output: Authorization=xxxx-2345
 EJMaskInitializer.addFilter(
     new BaseFilter(HeaderFieldPatternBuilder.class, 4, "Authorization")
+);
+```
+
+##### String Builders
+
+###### PipeSeparatedValuePatternBuilder
+
+Fully masks field values in **pipe-separated** `key=value` payloads, such as serialized event-pipeline data. The value delimiter is `|` or end of string. The character class also excludes `"` and `\` so that the replacement cannot bleed into adjacent JSON syntax when the payload is embedded inside a JSON field value. `visibleCharacters` is ignored; the entire value is always replaced with `****`.
+
+```java
+// Input:  userId=1234567890|payerType=SELLER|type=CHARGE
+// Output: userId=****|payerType=SELLER|type=CHARGE
+EJMaskInitializer.addFilter(
+    new BaseFilter(PipeSeparatedValuePatternBuilder.class, 0, "userId", "orgId")
+);
+
+// Also works when the payload appears as a JSON field value:
+// Input:  {"decodePayload":"userId=1234567890|payerType=SELLER|type=CHARGE"}
+// Output: {"decodePayload":"userId=****|payerType=SELLER|type=CHARGE"}
+EJMaskInitializer.addFilter(
+    new BaseFilter(PipeSeparatedValuePatternBuilder.class, 0, "userId", "orgId")
 );
 ```
 
