@@ -55,6 +55,9 @@ public class EscapedJsonFullValuePatternBuilder extends AbstractRegexPatternBuil
      */
     @Override
     public String buildPattern(int visibleCharacters, String... fieldNames) {
+        if (visibleCharacters != 0) {
+            throw new IllegalArgumentException("visibleCharacters must be 0 instead of " + visibleCharacters);
+        }
         return String.format(PATTERN_TEMPLATE, super.buildFieldNamesForRegexOr(fieldNames));
     }
 
